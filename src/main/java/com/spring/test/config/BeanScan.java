@@ -1,0 +1,15 @@
+package com.spring.test.config;
+
+import com.spring.annotation.Component;
+
+/**
+ * @Program: spring-rewrite
+ * @Author: 2Executioner
+ * @Time: 2021/7/28  20:39
+ * @Copyright：Copyright(c) 1205878539@qq.com
+ * @Version: 1.0.0
+ * @Description：
+ */
+@Component("com.spring.test.module")
+public class BeanScan {
+}
