@@ -23,4 +23,7 @@ public interface ConfigurableBeanFactory extends SingletonBeanRegistry, BeanFact
 
     // 注册依赖此bean的bean
     void registerDependentBean(String beanName, String dependentBeanName);
+
+    // 添加beanPostProcessor对象
+    void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 }

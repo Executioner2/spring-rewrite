@@ -2,6 +2,14 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.factory.BeanFactory;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
+import com.spring.interface_.BeanPostProcessor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * @Program: spring-rewrite
@@ -12,6 +20,9 @@ import com.spring.beans.factory.config.ConfigurableBeanFactory;
  * @Description：
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+    // 存放所有继承了beanPostProcessors的对象
+    private final List<BeanPostProcessor> beanPostProcessors = new BeanPostProcessorCacheAwareList();
+
     @Override
     public Object getBean(String name) {
         return null;
@@ -35,5 +46,71 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     @Override
     public Class<?> getType(String name) {
         return null;
+    }
+
+    @Override
+    public void addBeanPostProcessor(com.spring.beans.factory.config.BeanPostProcessor beanPostProcessor) {
+
+    }
+
+    /**
+     * 高并发下的list集合，利用内部类继承CopyOnWriteArrayList实现
+     */
+    private class BeanPostProcessorCacheAwareList extends CopyOnWriteArrayList<BeanPostProcessor> {
+
+        @Override
+        public BeanPostProcessor set(int index, BeanPostProcessor element) {
+            return super.set(index, element);
+        }
+
+        @Override
+        public boolean add(BeanPostProcessor o) {
+            return super.add(o);
+        }
+
+        @Override
+        public void add(int index, BeanPostProcessor element) {
+            super.add(index, element);
+        }
+
+        @Override
+        public BeanPostProcessor remove(int index) {
+            return super.remove(index);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return super.remove(o);
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return super.removeAll(c);
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return super.retainAll(c);
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends BeanPostProcessor> c) {
+            return super.addAll(c);
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<? extends BeanPostProcessor> c) {
+            return super.addAll(index, c);
+        }
+
+        @Override
+        public boolean removeIf(Predicate<? super BeanPostProcessor> filter) {
+            return super.removeIf(filter);
+        }
+
+        @Override
+        public void replaceAll(UnaryOperator<BeanPostProcessor> operator) {
+            super.replaceAll(operator);
+        }
     }
 }

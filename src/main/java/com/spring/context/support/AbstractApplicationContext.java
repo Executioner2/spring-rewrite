@@ -18,13 +18,16 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
         ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
         // 3、初始化beanFactory的一些参数 TODO 待实现
-        prepareBeanFactory();
+        prepareBeanFactory(beanFactory);
 
         // 4、beanFactory后置增强处理 TODO 待实现
-        postProcessBeanFactory();
+        postProcessBeanFactory(beanFactory);
 
-        // 5、调用beanFactory后置增强器 TODO 待实现
-        invokeBeanFactoryPostProcessors();
+        // 5、调用beanFactory后置增强器 TODO 做包扫描
+        invokeBeanFactoryPostProcessors(beanFactory);
+
+        // 6、注册bean后置处理器 TODO 做了包扫描后做这个
+        registerBeanPostProcessors(beanFactory);
 
         // 6、国际化处理 TODO 待实现
         initMessageSource();
@@ -43,6 +46,14 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
 
         // 11、发布相应事件 TODO 待实现
         finishRefresh();
+
+    }
+
+    /**
+     * 注册bean后置处理器
+     * @param beanFactory
+     */
+    protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 
     }
 
@@ -90,22 +101,26 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     }
 
     /**
-     * 调用beanFactory后置增强器，现在先空着
+     * 调用beanFactory后置增强器
+     * 在此方法中进行包扫描。
+     * @param beanFactory
      */
-    protected void invokeBeanFactoryPostProcessors() {
+    protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 
     }
 
     /**
      * beanFactory后置增强处理，先空着，官方也是空着的
+     * @param beanFactory
      */
-    protected void postProcessBeanFactory() {
+    protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
     }
 
     /**
      * 初始化beanFactory的一些参数，现在先空着
+     * @param beanFactory
      */
-    protected void prepareBeanFactory() {
+    protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 
     }
 
