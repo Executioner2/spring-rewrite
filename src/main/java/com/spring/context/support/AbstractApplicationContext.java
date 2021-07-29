@@ -20,7 +20,7 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
         // 3、初始化beanFactory的一些参数 TODO 待实现
         prepareBeanFactory(beanFactory);
 
-        // 4、beanFactory后置增强处理 TODO 待实现
+        // 4、beanFactory后置增强处理
         postProcessBeanFactory(beanFactory);
 
         // 5、调用beanFactory后置增强器 TODO 做包扫描
@@ -110,7 +110,7 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     }
 
     /**
-     * beanFactory后置增强处理，先空着，官方也是空着的
+     * beanFactory后置增强处理，先空着，官方是交给用户去实现的
      * @param beanFactory
      */
     protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
