@@ -29,6 +29,12 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     // 字段中依赖的bean
     private String[] dependsOn;
 
+    public AbstractBeanDefinition() {
+    }
+
+    public AbstractBeanDefinition(Class<?> beanClass) {
+        this.beanClass = beanClass;
+    }
 
     /**
      * 是否有未注入的属性值
@@ -76,13 +82,13 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     }
 
     @Override
-    public void setBeanClassName(String className) {
-
+    public void setBeanClassName(String beanClassName) {
+        this.beanClass = beanClassName;
     }
 
     @Override
     public String getBeanClassName() {
-        return null;
+        return this.getBeanClass().toString();
     }
 
     @Override

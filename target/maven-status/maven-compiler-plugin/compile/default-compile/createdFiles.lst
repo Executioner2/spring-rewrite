@@ -1,6 +1,7 @@
 com\spring\beans\factory\support\DefaultListableBeanFactory.class
 com\spring\beans\factory\support\RootBeanDefinition.class
 com\spring\context\ApplicationContext.class
+com\spring\beans\factory\support\BeanDefinitionReaderUtils.class
 com\spring\beans\factory\config\ConfigurableBeanFactory.class
 com\spring\context\annotation\ComponentScan.class
 com\spring\beans\factory\support\AbstractBeanFactory.class
@@ -10,8 +11,10 @@ com\spring\beans\factory\BeanFactory.class
 com\spring\beans\factory\ObjectFactory.class
 com\spring\context\annotation\AnnotationConfigApplicationContext.class
 com\spring\context\support\GenericApplicationContext.class
+com\spring\context\annotation\Component.class
 com\spring\beans\factory\support\BeanDefinitionRegistry.class
 com\spring\AppTest.class
+com\spring\beans\factory\annotation\AnnotatedGenericBeanDefinition.class
 com\spring\beans\factory\config\ConfigurableListableBeanFactory.class
 com\spring\beans\factory\config\SingletonBeanRegistry.class
 com\spring\beans\factory\support\AbstractBeanDefinition.class

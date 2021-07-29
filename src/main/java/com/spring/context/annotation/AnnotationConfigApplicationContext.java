@@ -1,9 +1,11 @@
 package com.spring.context.annotation;
 
 import com.spring.beans.factory.annotation.AnnotatedGenericBeanDefinition;
-import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
+import com.spring.beans.factory.support.BeanDefinitionReaderUtils;
 import com.spring.beans.factory.support.BeanDefinitionRegistry;
 import com.spring.context.support.GenericApplicationContext;
+
+import java.lang.annotation.Annotation;
 
 public class AnnotationConfigApplicationContext extends GenericApplicationContext {
     // 这两个变量暂时没用，在spring源码中有重要作用
@@ -35,7 +37,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
                 // 如果是包扫描则先把该方法注册到bean中
                 AnnotatedGenericBeanDefinition annotatedGenericBeanDefinition = new AnnotatedGenericBeanDefinition();
                 annotatedGenericBeanDefinition.setBeanClass(componentClass);
-
+                // 取得beanName
+                String beanName = BeanDefinitionReaderUtils.generateBeanName(annotatedGenericBeanDefinition);
+                // 注册到beanDefinitionMap中去
+                beanFactory.registerBeanDefinition(beanName, annotatedGenericBeanDefinition);
             }
         }
     }

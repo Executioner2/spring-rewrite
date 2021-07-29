@@ -11,4 +11,5 @@ import com.spring.beans.factory.support.AbstractBeanDefinition;
  * @Description：
  */
 public class AnnotatedGenericBeanDefinition extends AbstractBeanDefinition {
+
 }

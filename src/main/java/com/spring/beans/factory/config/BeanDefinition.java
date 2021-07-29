@@ -20,10 +20,16 @@ public interface BeanDefinition {
     BeanDefinition getOriginatingBeanDefinition();
 
     // 设置bean的classname
-    void setBeanClassName(String className);
+    void setBeanClassName(String beanClassName);
 
     // 获取bean的classname
     String getBeanClassName();
+
+    // 设置beanClass
+    void setBeanClass(Class<?> beanClass);
+
+    // 获取beanClass
+    Class<?> getBeanClass();
 
     // 设置实例化模式
     void setScope(String scope);

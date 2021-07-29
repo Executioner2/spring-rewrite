@@ -1,6 +1,6 @@
 package com.spring.test.config;
 
-import com.spring.annotation.Component;
+import com.spring.context.annotation.ComponentScan;
 
 /**
  * @Program: spring-rewrite
@@ -10,6 +10,6 @@ import com.spring.annotation.Component;
  * @Version: 1.0.0
  * @Description：
  */
-@Component("com.spring.test.module")
+@ComponentScan("com.spring.test.module")
 public class BeanScan {
 }
