@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Unit test for simple App.
@@ -24,6 +27,16 @@ public class AppTest
     public void test01() {
         Application application = new Application("com.study.spring.ApplicationContext");
 
+    }
+
+    @Test
+    public void test02() {
+        List list = new ArrayList();
+        Iterator iterator = list.iterator();
+        Iterator iterator1 = list.iterator();
+        System.out.println(iterator);
+        System.out.println(iterator1);
+        System.out.println(iterator == iterator1);
     }
 
     /**

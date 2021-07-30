@@ -13,8 +13,9 @@ import com.spring.context.annotation.Lazy;
 import com.spring.context.annotation.Scope;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,6 +43,8 @@ final class PostProcessorRegistrationDelegate {
         if (beanFactory instanceof BeanDefinitionRegistry) {
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
+            List<Object> beanDefinitionScanList = new ArrayList();
+
             // XXX spring官方是用bean注册后置处理器来进行包扫描注册的
             // 这里直接进行包扫描注册，后续在进行改进
             Iterator<String> beanNamesIterator = beanFactory.getBeanNamesIterator();
@@ -64,20 +67,42 @@ final class PostProcessorRegistrationDelegate {
                         URL resource = beanClassLoader.getResource(s.replace(".", "/"));
                         File file = new File(resource.getPath());
                         if (file.exists()) {
-                            packageScan(registry, s, file);
+                            beanDefinitionScanList.addAll((Collection)
+                                    packageScan(s, file));
                         }
                     }
+
                 }
             }
+
+            // 注册beanDefinition
+            beanDefinitionScanList.stream().forEach(item -> {
+                String beanName = (String) ((Object[]) item)[0];
+                BeanDefinition beanDefinition = (BeanDefinition) ((Object[]) item)[1];
+
+                if (beanName.isBlank()) {
+                    throw new IllegalStateException("beanName不合法");
+                }
+
+                if (registry.isBeanNameInUse(beanName)) {
+                    throw new IllegalStateException("beanName已存在");
+                }
+
+                // 注册beaDefinition
+                registry.registerBeanDefinition(beanName, beanDefinition);
+
+            });
+
         }
+
     }
 
     /**
      * 进行包扫描并注册beanDefinition
-     * @param beanFactory
+     * @param packageName
      * @param file
      */
-    private static void packageScan(BeanDefinitionRegistry beanFactory, String packageName, File file) {
+    private static Object packageScan(String packageName, File file) {
         if (file.isFile()) {
             // beanNameArray[]{首字母未转小写的类名，首字母转了小写的类名}
             String[] beanNameArray = BeanDefinitionReaderUtils.generateBeanName(file.getName());
@@ -88,16 +113,12 @@ final class PostProcessorRegistrationDelegate {
 
                     // 是否有Component注解，有才加入到beanDefinition中
                     if (!(aClass.isAnnotationPresent(Component.class))) {
-                        return;
+                        return null;
                     } else {
                         // 判断component的value是否有参数，有就用value的值做beanName
                         Component component = aClass.getDeclaredAnnotation(Component.class);
                         String value = component.value();
-
-                        // 这里需要严格的判断顺序，所以分开取反
-                        if (!(value.isBlank()) && !(beanFactory.isBeanNameInUse(value))) {
-                            beanNameArray[1] = value;
-                        }
+                        beanNameArray[1] = value;
                     }
 
                     BeanDefinition beanDefinition = new RootBeanDefinition(aClass);
@@ -129,19 +150,33 @@ final class PostProcessorRegistrationDelegate {
                         }
                     }
 
-                    // 依赖的其它bean
-
-                    // 注册beanDefinition
-                    beanFactory.registerBeanDefinition(beanNameArray[1], beanDefinition);
+                    return new Object[]{beanNameArray[1], beanDefinition};
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
-        } else if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                packageScan(beanFactory, packageName, f);
+
+        // 不是目录返回null
+        } else if (!(file.isDirectory())){
+            return null;
+        }
+
+        // 到这里file一定是个目录
+        List list = new ArrayList();
+        for (File f : file.listFiles()) {
+
+            if (f.isDirectory()) {
+                list.addAll((Collection) packageScan(packageName + "." + f.getName(), f));
+                continue;
+            }
+
+            // 返回的第一个参数为beanName，第二个参数为beanDefinition
+            Object[] result = (Object[]) packageScan(packageName, f);
+            if (result != null) {
+                list.add(result);
             }
         }
+        return list;
     }
 
 
