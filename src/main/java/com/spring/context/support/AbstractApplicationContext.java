@@ -1,10 +1,22 @@
 package com.spring.context.support;
 
+import com.spring.beans.factory.config.BeanFactoryPostProcessor;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.context.ConfigurableApplicationContext;
+import com.spring.context.annotation.ConfigurationClassPostProcessor;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractApplicationContext implements ConfigurableApplicationContext {
 
+    // bean工厂后置处理集合
+    private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
+
+    // 监听器集合 TODO 在写监听器的时候在具体实现
+    //private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
     /**
      * 核心方法，整个ioc流程就在此方法中
@@ -106,7 +118,7 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
      * @param beanFactory
      */
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-
+        PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
     }
 
     /**
@@ -146,5 +158,9 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     @Override
     public Object getBean(String beanName) {
         return null;
+    }
+
+    public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors() {
+        return beanFactoryPostProcessors;
     }
 }

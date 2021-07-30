@@ -1,6 +1,7 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.ConfigurableBeanFactory;
 
 /**
  * @Program: spring-rewrite
@@ -29,10 +30,10 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     // 字段中依赖的bean
     private String[] dependsOn;
 
-    public AbstractBeanDefinition() {
+    protected AbstractBeanDefinition() {
     }
 
-    public AbstractBeanDefinition(Class<?> beanClass) {
+    protected AbstractBeanDefinition(Class<?> beanClass) {
         this.beanClass = beanClass;
     }
 
@@ -51,16 +52,31 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
      */
     @Override
     public boolean isSingleton() {
+        if ("".equals(this.scope) ||
+                ConfigurableBeanFactory.SCOPE_SINGLETON.equals(this.scope)) {
+
+            return true;
+        }
         return false;
     }
 
     /**
-     * 获取bean定义
+     * 是否是原型bean
      * @return
      */
     @Override
+    public boolean isPrototype() {
+        return ConfigurableBeanFactory.SCOPE_PROTOTYPE.equals(this.scope);
+    }
+
+    /**
+     * 获取bean定义
+     * 与官方写法大相径庭
+     * @return 直接返回本身
+     */
+    @Override
     public BeanDefinition getOriginatingBeanDefinition() {
-        return null;
+        return this;
     }
 
     /**
@@ -93,31 +109,35 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
 
     @Override
     public void setLazyInit(boolean lazyInit) {
-
+        this.lazyInit = lazyInit;
     }
 
+    /**
+     * 是否懒加载
+     * @return
+     */
     @Override
     public boolean isLazyInit() {
-        return false;
+        return (this.lazyInit != null && this.lazyInit.booleanValue());
     }
 
     @Override
     public void setDependsOn(String... dependsOn) {
-
+        this.dependsOn = dependsOn;
     }
 
     @Override
     public String[] getDependsOn() {
-        return new String[0];
+        return this.dependsOn;
     }
 
     @Override
     public void setScope(String scope) {
-
+        this.scope = scope;
     }
 
     @Override
     public String getScope() {
-        return null;
+        return this.scope;
     }
 }

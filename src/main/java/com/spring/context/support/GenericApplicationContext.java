@@ -47,7 +47,7 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
-
+        this.beanFactory.registerBeanDefinition(beanName, beanDefinition);
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public void removeBeanDefinition(String beanName) {
-
+        this.beanFactory.removeBeanDefinition(beanName);
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public BeanDefinition getBeanDefinition(String beanName) {
-        return null;
+        return this.beanFactory.getBeanDefinition(beanName);
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public boolean containsBeanDefinition(String beanName) {
-        return false;
+        return this.beanFactory.containsBeanDefinition(beanName);
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public String[] getBeanDefinitionNames() {
-        return new String[0];
+        return this.beanFactory.getBeanDefinitionNames();
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public int getBeanDefinitionCount() {
-        return 0;
+        return this.beanFactory.getBeanDefinitionCount();
     }
 
     /**
@@ -104,6 +104,6 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
      */
     @Override
     public boolean isBeanNameInUse(String beanName) {
-        return false;
+        return this.beanFactory.isBeanNameInUse(beanName);
     }
 }

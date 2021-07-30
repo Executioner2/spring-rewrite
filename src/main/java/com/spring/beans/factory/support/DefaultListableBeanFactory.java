@@ -4,6 +4,7 @@ import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,12 +27,25 @@ public class DefaultListableBeanFactory extends AbstractBeanFactory implements C
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
+        if (this.isBeanNameInUse(beanName)) {
+            throw new IllegalStateException("beanName已被使用");
+        }
 
+        this.beanDefinitionMap.put(beanName, beanDefinition);
+        this.beanDefinitionNames.add(beanName);
     }
 
+    /**
+     * 移除beanDefinition，
+     * 把map和list中的信息都移除
+     * @param beanName
+     */
     @Override
     public void removeBeanDefinition(String beanName) {
-
+        if (this.containsBeanDefinition(beanName)) {
+            this.beanDefinitionMap.remove(beanName);
+            this.beanDefinitionNames.remove(beanName);
+        }
     }
 
     /**
@@ -46,6 +60,18 @@ public class DefaultListableBeanFactory extends AbstractBeanFactory implements C
             throw new NullPointerException("bean定义不存在"); // XXX 将就抛空指针异常
         }
         return beanDefinition;
+    }
+
+    /**
+     * 获取beanNames的迭代器
+     * spring源码中利用的是官方自己写的复合迭代器
+     * 除了beanNames的迭代器其中还包含手动单例集合的迭代器
+     * @return
+     */
+    @Override
+    public Iterator<String> getBeanNamesIterator() {
+
+        return this.beanDefinitionNames.iterator();
     }
 
     /**

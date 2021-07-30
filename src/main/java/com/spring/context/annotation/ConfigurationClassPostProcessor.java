@@ -15,7 +15,7 @@ import com.spring.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
     /**
-     * TODO 急需实现，就在此进行包扫描，beanDefinition注册
+     * TODO 在此进行包扫描，beanDefinition注册
      * @param registry
      */
     @Override

@@ -1,6 +1,7 @@
 package com.spring.context.annotation;
 
 import com.spring.beans.factory.annotation.AnnotatedGenericBeanDefinition;
+import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.support.BeanDefinitionReaderUtils;
 import com.spring.beans.factory.support.BeanDefinitionRegistry;
 import com.spring.context.support.GenericApplicationContext;
@@ -35,12 +36,12 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
         for (Class componentClass : componentClasses) {
             if (componentClass.isAnnotationPresent(ComponentScan.class)) {
                 // 如果是包扫描则先把该方法注册到bean中
-                AnnotatedGenericBeanDefinition annotatedGenericBeanDefinition = new AnnotatedGenericBeanDefinition();
-                annotatedGenericBeanDefinition.setBeanClass(componentClass);
+                BeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition();
+                beanDefinition.setBeanClass(componentClass);
                 // 取得beanName
-                String beanName = BeanDefinitionReaderUtils.generateBeanName(annotatedGenericBeanDefinition);
+                String beanName = BeanDefinitionReaderUtils.generateBeanName(beanDefinition);
                 // 注册到beanDefinitionMap中去
-                beanFactory.registerBeanDefinition(beanName, annotatedGenericBeanDefinition);
+                beanFactory.registerBeanDefinition(beanName, beanDefinition);
             }
         }
     }

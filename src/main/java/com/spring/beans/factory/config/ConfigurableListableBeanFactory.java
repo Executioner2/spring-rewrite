@@ -1,5 +1,7 @@
 package com.spring.beans.factory.config;
 
+import java.util.Iterator;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -11,4 +13,7 @@ package com.spring.beans.factory.config;
 public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory{
     // 获取beanDefinition
     BeanDefinition getBeanDefinition(String beanName);
+
+    // 获取beanDefinition的迭代器
+    Iterator<String> getBeanNamesIterator();
 }

@@ -16,6 +16,9 @@ public interface BeanDefinition {
     // 是否是单例bean
     boolean isSingleton();
 
+    // 是否是原型bean
+    boolean isPrototype();
+
     // 获取原始单例bean定义
     BeanDefinition getOriginatingBeanDefinition();
 

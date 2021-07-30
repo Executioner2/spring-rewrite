@@ -14,4 +14,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition{
 
     // 是否需要提前生成代理对象
     boolean postProcessed = false;
+
+    public RootBeanDefinition(Class<?> beanClass) {
+        super(beanClass);
+    }
 }
