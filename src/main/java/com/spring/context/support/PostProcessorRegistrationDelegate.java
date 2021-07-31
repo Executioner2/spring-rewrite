@@ -95,6 +95,8 @@ final class PostProcessorRegistrationDelegate {
             }
         }
 
+        System.out.println("amd yes");
+
     }
 
     /**

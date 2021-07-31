@@ -29,11 +29,6 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
 
     @Override
-    public Object getBean(String name) {
-        return doGetBean(name);
-    }
-
-    @Override
     public boolean containsBean(String name) {
         return false;
     }
@@ -49,6 +44,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     @Override
+    public Object getBean(String name) {
+        return doGetBean(name);
+    }
+
+    @Override
     public Class<?> getType(String name) {
         return null;
     }
@@ -58,7 +58,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     /**
-     * 取得mbd
+     * 取得mbd，如果不存在则根据传来的beanDefinition创建
      * @param beanName
      * @param beanDefinition 其它继承了BeanDefinition接口的bean定义
      * @return
@@ -67,12 +67,25 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         RootBeanDefinition rootBeanDefinition = this.mergedBeanDefinitions.get(beanName);
 
         if (rootBeanDefinition == null) {
+            if (beanDefinition == null) {
+                throw new NullPointerException("beanDefinition不能为空！");
+            }
+
             // 深度复制
             rootBeanDefinition = new RootBeanDefinition(beanDefinition);
             this.mergedBeanDefinitions.put(beanName, rootBeanDefinition);
         }
 
         return rootBeanDefinition;
+    }
+
+    /**
+     * 取得mbd
+     * @param beanName
+     * @return
+     */
+    public RootBeanDefinition getMergedBeanDefinition(String beanName) {
+        return this.mergedBeanDefinitions.get(beanName);
     }
 
     @Override
@@ -93,14 +106,28 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         // 1、先尝试获取单例对象
         Object singleton = this.getSingleton(name);
         if (singleton == null) {
-            // 为空则创建对象，先从beanDefinitionMap中取得beanDefinition
+            // 为空则创建对象，先从mergedBeanDefinitions中取得rootBeanDefinition
+            RootBeanDefinition mbd = this.getMergedBeanDefinition(name);
 
+            // 单例模式
+            if (mbd.isSingleton()) {
+                singleton = this.getSingleton(name, () -> {
+                    return createBean(name, mbd, null);
+                });
+            }
+            // TODO 原型模式
+            else if (mbd.isPrototype()) {
+
+            }
 
         }
 
         return singleton;
     }
 
+
+    // 创建bean对象
+    protected abstract Object createBean(String beanName, RootBeanDefinition mbd, Object[] args);
 
     /**
      * 高并发下的list集合，利用内部类继承CopyOnWriteArrayList实现

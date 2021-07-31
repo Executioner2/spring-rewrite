@@ -159,4 +159,16 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
         return singletonObject;
     }
 
+    /**
+     * 获取单例对象
+     * @param beanName
+     * @param singletonFactory 传入lambda表达式
+     * @return
+     */
+    public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
+        Object object = singletonFactory.getObject();
+
+        return object;
+    }
+
 }
