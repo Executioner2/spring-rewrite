@@ -15,6 +15,7 @@ com\spring\beans\factory\support\BeanDefinitionRegistry.class
 com\spring\test\service\ProductService.class
 com\spring\beans\factory\config\ConfigurableListableBeanFactory.class
 com\spring\beans\factory\config\SingletonBeanRegistry.class
+com\spring\context\annotation\ScannedGenericBeanDefinition.class
 com\spring\context\support\AbstractApplicationContext.class
 com\spring\test\handler\MyAspect.class
 com\spring\beans\factory\support\DefaultListableBeanFactory.class

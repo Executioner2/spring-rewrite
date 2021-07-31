@@ -1,12 +1,14 @@
 package com.spring.beans.factory.support;
 
-import com.spring.beans.factory.BeanFactory;
+import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
-import com.spring.interface_.BeanPostProcessor;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -23,9 +25,12 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     // 存放所有继承了beanPostProcessors的对象
     private final List<BeanPostProcessor> beanPostProcessors = new BeanPostProcessorCacheAwareList();
 
+    // 存放rootBeanDefinition的集合
+    private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
+
     @Override
     public Object getBean(String name) {
-        return null;
+        return doGetBean(name);
     }
 
     @Override
@@ -48,10 +53,54 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return null;
     }
 
-    @Override
-    public void addBeanPostProcessor(com.spring.beans.factory.config.BeanPostProcessor beanPostProcessor) {
-
+    protected List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
     }
+
+    /**
+     * 取得mbd
+     * @param beanName
+     * @param beanDefinition 其它继承了BeanDefinition接口的bean定义
+     * @return
+     */
+    public RootBeanDefinition getMergedBeanDefinition(String beanName, BeanDefinition beanDefinition) {
+        RootBeanDefinition rootBeanDefinition = this.mergedBeanDefinitions.get(beanName);
+
+        if (rootBeanDefinition == null) {
+            // 深度复制
+            rootBeanDefinition = new RootBeanDefinition(beanDefinition);
+            this.mergedBeanDefinitions.put(beanName, rootBeanDefinition);
+        }
+
+        return rootBeanDefinition;
+    }
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        // 移除旧的bean后置处理器
+        this.beanPostProcessors.remove(beanPostProcessor);
+        // 添加新的bean后置处理器
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    /**
+     * 获取bean对象，spring官方源码有更多参数，
+     * 这里先进行简单实现，复杂的处理等后续完善
+     * @param name beanName
+     * @return
+     */
+    protected Object doGetBean(String name) {
+        // 1、先尝试获取单例对象
+        Object singleton = this.getSingleton(name);
+        if (singleton == null) {
+            // 为空则创建对象，先从beanDefinitionMap中取得beanDefinition
+
+
+        }
+
+        return singleton;
+    }
+
 
     /**
      * 高并发下的list集合，利用内部类继承CopyOnWriteArrayList实现

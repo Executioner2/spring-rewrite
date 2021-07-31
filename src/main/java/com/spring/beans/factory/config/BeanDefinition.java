@@ -45,11 +45,4 @@ public interface BeanDefinition {
 
     // 是否是懒加载
     boolean isLazyInit();
-
-    // 设置属性中有那些依赖的bean
-    void setDependsOn(String ...dependsOn);
-
-    // 取出所有依赖的bean
-    String[] getDependsOn();
-
 }

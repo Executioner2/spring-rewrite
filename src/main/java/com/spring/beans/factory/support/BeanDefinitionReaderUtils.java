@@ -21,6 +21,7 @@ public abstract class BeanDefinitionReaderUtils {
     public static String generateBeanName(BeanDefinition beanDefinition) {
         Class<?> beanClass = beanDefinition.getBeanClass();
         String name = beanClass.getName();
+        name = name.replace(beanClass.getPackageName() + ".", "");
         return firstChartToLowerCase(name);
     }
 

@@ -27,14 +27,21 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     // bean定义，与spring源码有些区别，spring源码使用的是更上层的Resource接口
     private BeanDefinitionRegistry resource;
 
-    // 字段中依赖的bean
-    private String[] dependsOn;
-
     protected AbstractBeanDefinition() {
     }
 
     protected AbstractBeanDefinition(Class<?> beanClass) {
         this.beanClass = beanClass;
+    }
+
+    protected AbstractBeanDefinition(BeanDefinition original) {
+        setBeanClassName(original.getBeanClassName());
+        setScope(original.getScope());
+        setLazyInit(original.isLazyInit());
+
+        if (original instanceof AbstractBeanDefinition) {
+            // TODO 待补充
+        }
     }
 
     /**
@@ -119,16 +126,6 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     @Override
     public boolean isLazyInit() {
         return (this.lazyInit != null && this.lazyInit.booleanValue());
-    }
-
-    @Override
-    public void setDependsOn(String... dependsOn) {
-        this.dependsOn = dependsOn;
-    }
-
-    @Override
-    public String[] getDependsOn() {
-        return this.dependsOn;
     }
 
     @Override

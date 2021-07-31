@@ -1,16 +1,8 @@
 package com.spring.context.support;
 
-import com.spring.beans.factory.config.BeanDefinition;
-import com.spring.beans.factory.config.BeanFactoryPostProcessor;
-import com.spring.beans.factory.config.ConfigurableBeanFactory;
-import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
-import com.spring.beans.factory.support.BeanDefinitionReaderUtils;
-import com.spring.beans.factory.support.BeanDefinitionRegistry;
-import com.spring.beans.factory.support.RootBeanDefinition;
-import com.spring.context.annotation.Component;
-import com.spring.context.annotation.ComponentScan;
-import com.spring.context.annotation.Lazy;
-import com.spring.context.annotation.Scope;
+import com.spring.beans.factory.config.*;
+import com.spring.beans.factory.support.*;
+import com.spring.context.annotation.*;
 
 import java.io.File;
 import java.net.URL;
@@ -39,21 +31,21 @@ final class PostProcessorRegistrationDelegate {
     public static void invokeBeanFactoryPostProcessors(
             ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
-
+        // 包扫描，bean定义注册
         if (beanFactory instanceof BeanDefinitionRegistry) {
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
             List<Object> beanDefinitionScanList = new ArrayList();
 
             // XXX spring官方是用bean注册后置处理器来进行包扫描注册的
-            // 这里直接进行包扫描注册，后续在进行改进
+            // XXX 这里直接进行包扫描注册，后续再进行改进
             Iterator<String> beanNamesIterator = beanFactory.getBeanNamesIterator();
             while (beanNamesIterator.hasNext()) {
                 String beanName = beanNamesIterator.next();
                 BeanDefinition beanDefinition = registry.getBeanDefinition(beanName);
                 Class<?> beanClass = beanDefinition.getBeanClass();
 
-                // 判断beanDefinition上是否有ComponentScan注解
+                // 判断bean定义上是否有ComponentScan注解
                 if (beanClass.isAnnotationPresent(ComponentScan.class)) {
                     ComponentScan componentScan = beanClass.getDeclaredAnnotation(ComponentScan.class);
 
@@ -67,38 +59,46 @@ final class PostProcessorRegistrationDelegate {
                         URL resource = beanClassLoader.getResource(s.replace(".", "/"));
                         File file = new File(resource.getPath());
                         if (file.exists()) {
-                            beanDefinitionScanList.addAll((Collection)
-                                    packageScan(s, file));
+                            beanDefinitionScanList.addAll((Collection)packageScan(s, file));
                         }
                     }
 
                 }
             }
 
-            // 注册beanDefinition
+            // 开始注册bean定义
             beanDefinitionScanList.stream().forEach(item -> {
                 String beanName = (String) ((Object[]) item)[0];
                 BeanDefinition beanDefinition = (BeanDefinition) ((Object[]) item)[1];
 
                 if (beanName.isBlank()) {
-                    throw new IllegalStateException("beanName不合法");
+                    throw new IllegalStateException("beanName（" + beanName + "）不合法，" + beanDefinition.getBeanClassName());
                 }
 
                 if (registry.isBeanNameInUse(beanName)) {
-                    throw new IllegalStateException("beanName已存在");
+                    throw new IllegalStateException("beanName（" + beanName + "）已存在" + beanDefinition.getBeanClassName());
                 }
 
-                // 注册beaDefinition
+                // 注册bean定义
                 registry.registerBeanDefinition(beanName, beanDefinition);
 
             });
 
+            // 把所有beanDefinitionMap中的bean定义注册到mergedBeanDefinitions中
+            beanNamesIterator = beanFactory.getBeanNamesIterator();
+            DefaultListableBeanFactory dbf = (DefaultListableBeanFactory) beanFactory;
+            while (beanNamesIterator.hasNext()) {
+                String key = beanNamesIterator.next();
+                BeanDefinition beanDefinition = beanFactory.getBeanDefinition(key);
+                // 这里深度复制把ScannedGenericBeanDefinition转换为RootBeanDefinition就很cd
+                dbf.getMergedBeanDefinition(key, beanDefinition); // TODO 返回一个rootBeanDefinition
+            }
         }
 
     }
 
     /**
-     * 进行包扫描并注册beanDefinition
+     * 进行包扫描并注册bean定义
      * @param packageName
      * @param file
      */
@@ -118,10 +118,12 @@ final class PostProcessorRegistrationDelegate {
                         // 判断component的value是否有参数，有就用value的值做beanName
                         Component component = aClass.getDeclaredAnnotation(Component.class);
                         String value = component.value();
-                        beanNameArray[1] = value;
+                        if (!("".equals(value))) {
+                            beanNameArray[1] = value;
+                        }
                     }
 
-                    BeanDefinition beanDefinition = new RootBeanDefinition(aClass);
+                    BeanDefinition beanDefinition = new ScannedGenericBeanDefinition(aClass);
                     beanDefinition.setBeanClass(aClass);
 
                     // 实例化方式
@@ -136,9 +138,7 @@ final class PostProcessorRegistrationDelegate {
                             throw new IllegalStateException("scope参数错误！");
                         }
 
-                        if (ConfigurableBeanFactory.SCOPE_PROTOTYPE.equals(value)) {
-                            beanDefinition.setScope(value);
-                        }
+                        beanDefinition.setScope(value);
                     }
 
                     // 是否懒加载
@@ -187,6 +187,25 @@ final class PostProcessorRegistrationDelegate {
      */
     public static void registerBeanPostProcessors(
             ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
+
+        // 1、先做beanPostProcessor实现类扫描
+        List<Class<?>> beanPostProcessorClass = new ArrayList<>();
+        Iterator<String> beanNamesIterator = beanFactory.getBeanNamesIterator();
+        while (beanNamesIterator.hasNext()) {
+            String beanName = beanNamesIterator.next();
+            BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+            Class<?> beanClass = beanDefinition.getBeanClass();
+
+            // 判断是否实现了BeanPostProcessor接口
+            if (BeanPostProcessor.class.isAssignableFrom(beanClass)) {
+                beanPostProcessorClass.add(beanClass);
+            }
+        }
+
+        // 2、生成beanPostProcessor实现类的单例bean
+
+
+        // 3、将bean添加到beanPostProcessors集合中去（此集合是进行了优先级排序的只装后置bean集合，与装单例bean的一级缓存是不同的）
 
     }
 }

@@ -39,6 +39,13 @@ public class AppTest
         System.out.println(iterator == iterator1);
     }
 
+    @Test
+    public void test03(){
+        AbstractBImpl abstractB = new AbstractBImpl();
+        System.out.println(InterfaceA.class.isAssignableFrom(abstractB.getClass()));
+        System.out.println(abstractB.getClass().isAssignableFrom(InterfaceA.class));
+    }
+
     /**
      * 文件递归扫描测试
      */

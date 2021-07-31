@@ -35,10 +35,10 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
         // 4、beanFactory后置增强处理
         postProcessBeanFactory(beanFactory);
 
-        // 5、调用beanFactory后置增强器 TODO 做包扫描
+        // 5、调用beanFactory后置增强器
         invokeBeanFactoryPostProcessors(beanFactory);
 
-        // 6、注册bean后置处理器 TODO 做了包扫描后做这个
+        // 6、注册（实例化）bean后置处理器 TODO 做了包扫描后做这个
         registerBeanPostProcessors(beanFactory);
 
         // 6、国际化处理 TODO 待实现
@@ -62,11 +62,11 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
     }
 
     /**
-     * 注册bean后置处理器
+     * 注册（实例化）bean后置处理器
      * @param beanFactory
      */
     protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-
+        PostProcessorRegistrationDelegate.registerBeanPostProcessors(beanFactory, this);
     }
 
     /**
