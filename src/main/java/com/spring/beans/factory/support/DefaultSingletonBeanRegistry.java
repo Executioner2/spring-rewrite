@@ -166,9 +166,62 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
      * @return
      */
     public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
-        Object object = singletonFactory.getObject();
+        // 创建bean之前
+        beforeSingletonCreation(beanName);
 
-        return object;
+        // 调用lambda方法获取其返回值
+        Object singletonObject = singletonFactory.getObject();
+
+        // 创建bean之后
+        afterSingletonCreation(beanName);
+
+        // 加入到一级缓存中
+        addSingleton(beanName, singletonObject);
+
+        return singletonObject;
+    }
+
+    /**
+     * 添加到三级缓存中
+     * @param beanName
+     * @param singletonFactory
+     */
+    protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
+        synchronized (this.singletonObjects) {
+            if (!this.singletonObjects.containsKey(beanName)) {
+                this.earlySingletonObjects.remove(beanName);
+                this.singletonFactories.put(beanName, singletonFactory);
+            }
+        }
+    }
+
+    /**
+     * 加入到一级缓存中
+     * @param beanName
+     * @param singletonObject
+     */
+    private void addSingleton(String beanName, Object singletonObject) {
+        synchronized (this.singletonObjects) {
+            this.singletonObjects.put(beanName, singletonObject);
+            this.singletonFactories.remove(beanName);
+            this.earlySingletonObjects.remove(beanName);
+        }
+    }
+
+    /**
+     * 创建单例对象之后
+     * @param beanName
+     */
+    protected void afterSingletonCreation(String beanName) {
+        // TODO 创建单例对象之后，待实现
+    }
+
+    /**
+     * 创建单例对象之前
+     * @param beanName
+     */
+    protected void beforeSingletonCreation(String beanName) {
+        // TODO 创建单例对象之前，待实现
     }
 
 }
