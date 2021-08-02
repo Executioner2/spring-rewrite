@@ -55,7 +55,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     protected List<BeanPostProcessor> getBeanPostProcessors() {
-        return beanPostProcessors;
+        return this.beanPostProcessors;
     }
 
     /**
@@ -122,20 +122,22 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     /**
      * 获取bean对象，spring官方源码有更多参数，
      * 这里先进行简单实现，复杂的处理等后续完善
-     * @param name beanName
+     * @param beanClassName
      * @return
      */
-    protected Object doGetBean(String name) {
+    protected Object doGetBean(String beanClassName) {
+        // 获取beanName，因为传来的可能是全限定名称，那么就需要进行剪切。不是则返回原来的beanName
+        String beanName = BeanDefinitionReaderUtils.generateBeanName(beanClassName);
         // 1、先尝试获取单例对象
-        Object singleton = this.getSingleton(name);
+        Object singleton = this.getSingleton(beanName);
         if (singleton == null) {
             // 为空则创建对象，先从mergedBeanDefinitions中取得rootBeanDefinition
-            RootBeanDefinition mbd = this.getMergedBeanDefinition(name);
+            RootBeanDefinition mbd = this.getMergedBeanDefinition(beanName);
 
             // 单例模式
             if (mbd.isSingleton()) {
-                singleton = this.getSingleton(name, () -> {
-                    return createBean(name, mbd, null);
+                singleton = this.getSingleton(beanName, () -> {
+                    return createBean(beanName, mbd, null);
                 });
             }
             // TODO 原型模式

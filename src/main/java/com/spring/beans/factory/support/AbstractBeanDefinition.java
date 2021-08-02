@@ -35,7 +35,7 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     }
 
     protected AbstractBeanDefinition(BeanDefinition original) {
-        setBeanClassName(original.getBeanClassName());
+        setBeanClass(original.getBeanClass());
         setScope(original.getScope());
         setLazyInit(original.isLazyInit());
 
@@ -105,16 +105,6 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     }
 
     @Override
-    public void setBeanClassName(String beanClassName) {
-        this.beanClass = beanClassName;
-    }
-
-    @Override
-    public String getBeanClassName() {
-        return this.getBeanClass().toString();
-    }
-
-    @Override
     public void setLazyInit(boolean lazyInit) {
         this.lazyInit = lazyInit;
     }
@@ -136,5 +126,19 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     @Override
     public String getScope() {
         return this.scope;
+    }
+
+    @Override
+    public void setBeanClassName(String beanClassName) {
+        try {
+            this.beanClass = Class.forName(beanClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getBeanClassName() {
+        return this.getBeanClass().toString();
     }
 }

@@ -17,6 +17,7 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\config
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\BeanDefinitionRegistryPostProcessor.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\DefaultSingletonBeanRegistry.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\aa\A.java
+E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\InitializingBean.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\Product.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\service\ProductService.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\annotation\Scope.java

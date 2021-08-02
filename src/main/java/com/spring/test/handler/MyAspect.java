@@ -1,5 +1,6 @@
 package com.spring.test.handler;
 
+import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.context.annotation.Component;
 
 /**
@@ -11,5 +12,15 @@ import com.spring.context.annotation.Component;
  * @Description：
  */
 @Component
-public class MyAspect {
+public class MyAspect implements BeanPostProcessor {
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
+        return bean;
+    }
 }

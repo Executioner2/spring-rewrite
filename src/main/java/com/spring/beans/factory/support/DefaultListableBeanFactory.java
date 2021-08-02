@@ -125,7 +125,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public Object getSingleton(String beanName) {
-        return null;
+        return getSingleton(beanName, true);
     }
 
     @Override

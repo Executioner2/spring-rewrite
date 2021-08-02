@@ -106,7 +106,7 @@ final class PostProcessorRegistrationDelegate {
     private static Object packageScan(String packageName, File file) {
         if (file.isFile()) {
             // beanNameArray[]{首字母未转小写的类名，首字母转了小写的类名}
-            String[] beanNameArray = BeanDefinitionReaderUtils.generateBeanName(file.getName());
+            String[] beanNameArray = BeanDefinitionReaderUtils.generateBeanName(file);
             if (beanNameArray != null && beanNameArray.length == 2) {
                 try {
                     String clazzStr = packageName + "." + beanNameArray[0];

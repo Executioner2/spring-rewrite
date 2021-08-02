@@ -64,7 +64,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
         // 2、加入三级缓存
         Object factoryBeanObject = beanObject;
-        System.out.println(factoryBeanObject == beanObject);
         addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, factoryBeanObject));
 
         // 3、依赖注入 populateBean

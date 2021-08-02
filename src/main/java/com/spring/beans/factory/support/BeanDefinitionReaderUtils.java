@@ -2,6 +2,9 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.factory.config.BeanDefinition;
 
+import java.io.File;
+import java.lang.reflect.Field;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -26,11 +29,23 @@ public abstract class BeanDefinitionReaderUtils {
     }
 
     /**
+     * 根据类名获取beanName
+     * @param beanClassName
+     * @return
+     */
+    public static String generateBeanName(String beanClassName) {
+        String[] split = beanClassName.split("\\.");
+        String name = split[split.length - 1];
+        return firstChartToLowerCase(name);
+    }
+
+    /**
      * 根据类文件名获取beanName
-     * @param fileName
+     * @param file
      * @return beanNameArray[]{首字母未转小写的类名，首字母转了小写的类名}
      */
-    public static String[] generateBeanName(String fileName) {
+    public static String[] generateBeanName(File file) {
+        String fileName = file.getName();
         if (fileName.endsWith(".class")) {
             String className = fileName.replaceFirst("\\.class", "");
             return new String[]{className, firstChartToLowerCase(className)};
