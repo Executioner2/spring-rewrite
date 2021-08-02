@@ -1,5 +1,6 @@
 package com.spring.test.module;
 
+import com.spring.beans.factory.annotation.Autowired;
 import com.spring.context.annotation.Component;
 
 /**
@@ -12,4 +13,6 @@ import com.spring.context.annotation.Component;
  */
 @Component
 public class User {
+    @Autowired
+    private Product product;
 }

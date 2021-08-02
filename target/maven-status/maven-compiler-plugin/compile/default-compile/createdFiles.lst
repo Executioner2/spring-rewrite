@@ -8,6 +8,7 @@ com\spring\test\service\impl\UserServiceImpl.class
 com\spring\test\config\BeanScan.class
 com\spring\beans\factory\BeanFactory.class
 com\spring\beans\factory\ObjectFactory.class
+com\spring\beans\factory\annotation\Autowired.class
 com\spring\test\module\aa\bb\B.class
 com\spring\context\annotation\ConfigurationClassParser.class
 com\spring\context\annotation\Scope.class
@@ -31,6 +32,7 @@ com\spring\test\module\aa\bb\dd\D.class
 com\spring\context\annotation\AnnotationConfigApplicationContext.class
 com\spring\context\support\GenericApplicationContext.class
 com\spring\context\annotation\Component.class
+com\spring\beans\factory\support\AbstractAutowireCapableBeanFactory.class
 com\spring\beans\factory\support\AbstractBeanFactory$BeanPostProcessorCacheAwareList.class
 com\spring\test\service\impl\ProductServiceImpl.class
 com\spring\AppTest.class

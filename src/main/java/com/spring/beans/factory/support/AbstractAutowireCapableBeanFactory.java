@@ -1,8 +1,10 @@
 package com.spring.beans.factory.support;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import com.spring.beans.factory.InitializingBean;
+import com.spring.beans.factory.annotation.Autowired;
+import com.spring.beans.factory.config.BeanPostProcessor;
+
+import java.lang.reflect.*;
 
 /**
  * @Program: spring-rewrite
@@ -45,9 +47,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 makeAccessible(constructor);
                 beanObject = constructor.newInstance(); // 原始bean对象
             }
-            // TODO 有参构造
+            // 有参构造
             else {
-
+                // TODO 有参构造待实现
             }
 
         } catch (NoSuchMethodException e) {
@@ -65,14 +67,17 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         System.out.println(factoryBeanObject == beanObject);
         addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, factoryBeanObject));
 
-        // 3、依赖注入
-
+        // 3、依赖注入 populateBean
+        populateBean(beanName, mbd, beanObject);
 
         // 4、postProcessBeforeInitialization
+        beanObject = applyBeanPostProcessorsBeforeInitialization(beanObject, beanName);
 
-        // 5、调用初始化方法
+        // 5、初始化 initializeBean
+        invokeInitMethods(beanName, beanObject, mbd);
 
         // 6、postProcessAfterInitialization（正常情况下是在后置通知中创建动态代理对象，如果有循环依赖则提前创建动态代理对象）
+        beanObject = applyBeanPostProcessorsAfterInitialization(beanObject, beanName);
 
         // 7、替换对象（从二级缓存中尝试拿取实例对象）
         Object earlyBeanObject = getSingleton(beanName, false);
@@ -83,6 +88,92 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
 
         return beanObject;
+    }
+
+    /**
+     * 初始化bean
+     * @param beanName 暂时没用
+     * @param beanObject
+     * @param mbd 暂时没用
+     * @return
+     */
+    protected void invokeInitMethods(String beanName, Object beanObject, RootBeanDefinition mbd) {
+        if (beanObject instanceof InitializingBean) {
+            ((InitializingBean) beanObject).afterPropertiesSet();
+        }
+    }
+
+    /**
+     * 执行postProcessBeforeInitialization方法
+     * 当其中有一个初始化前后置处理器返回结果为null时
+     * 则中断后续的增强处理，官方是这样写的，为什么不
+     * 继续处理可能是出于增强处理的顺序考虑，前面的返回
+     * 为null则是错误的处理所以就中断后续的处理，因为
+     * 后续的处理可能要依赖前面的处理结果。
+     * @param existingBean
+     * @param beanName
+     */
+    protected Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessBeforeInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    /**
+     * 执行postProcessAfterInitialization方法
+     * 当其中有一个初始化后后置处理器返回结果为null时
+     * 则中断后续的增强处理，官方是这样写的，为什么不
+     * 继续处理可能是出于增强处理的顺序考虑，前面的返回
+     * 为null则是错误的处理所以就中断后续的处理，因为
+     * 后续的处理可能要依赖前面的处理结果。
+     * @param existingBean
+     * @param beanName
+     */
+    protected Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessAfterInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    /**
+     * 依赖注入
+     * @param beanName 暂时没用到
+     * @param mbd 暂时没用到
+     * @param beanObject
+     */
+    protected void populateBean(String beanName, RootBeanDefinition mbd, Object beanObject) {
+        // 循环所有字段
+        Field[] declaredFields = beanObject.getClass().getDeclaredFields();
+        for (Field field : declaredFields) {
+            if (field.isAnnotationPresent(Autowired.class)) {
+//                Autowired autowired = field.getDeclaredAnnotation(Autowired.class);
+                // 获取字段类型
+                Type genericType = field.getGenericType();
+                RootBeanDefinition mergedBeanDefinition = getMergedBeanDefinition(genericType);
+                if (mergedBeanDefinition == null) {
+                    throw new NullPointerException("要注入的对象bean定义不存在");
+                }
+                makeAccessible(field);
+                // 获取bean对象
+                try {
+                    field.set(beanObject, getBean(mergedBeanDefinition.getBeanClassName()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -108,7 +199,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         if ((!Modifier.isPublic(ctor.getModifiers()) // 根据modifier（可见类型）判断构造方法是否是非公有
                 // 判断构造方法的类是否是非共有，构造方法是否取消了访问检查
                 || (!Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) && (!ctor.canAccess(null)))) {
+
             ctor.setAccessible(true); // 取消访问检查
+        }
+    }
+
+    /**
+     * 取消访问检查
+     * @param field
+     */
+    public static void makeAccessible(Field field) {
+        if ((!Modifier.isPublic(field.getModifiers()))
+                || (!Modifier.isPublic(field.getDeclaringClass().getModifiers()))
+                || (Modifier.isFinal(field.getModifiers()) && field.canAccess(null))) {
+
+            field.setAccessible(true);
         }
     }
 }

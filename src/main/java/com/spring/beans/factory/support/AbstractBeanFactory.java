@@ -6,6 +6,7 @@ import com.spring.beans.factory.config.ConfigurableBeanFactory;
 
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -88,12 +89,34 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return this.mergedBeanDefinitions.get(beanName);
     }
 
+    /**
+     * 根据类型取得mbd
+     * @param beanClass
+     * @return
+     */
+    public RootBeanDefinition getMergedBeanDefinition(Object beanClass) {
+        Iterator<String> iterator = this.mergedBeanDefinitions.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            RootBeanDefinition rootBeanDefinition = this.mergedBeanDefinitions.get(key);
+            if (rootBeanDefinition.getBeanClass().equals(beanClass)) {
+                return rootBeanDefinition;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
         // 移除旧的bean后置处理器
         this.beanPostProcessors.remove(beanPostProcessor);
         // 添加新的bean后置处理器
         this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    @Override
+    public int getBeanPostProcessorCount() {
+        return this.beanPostProcessors.size();
     }
 
     /**

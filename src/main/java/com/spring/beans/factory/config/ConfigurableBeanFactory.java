@@ -26,4 +26,8 @@ public interface ConfigurableBeanFactory extends SingletonBeanRegistry, BeanFact
 
     // 添加beanPostProcessor对象
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+
+    // 获取后置处理器数量
+    int getBeanPostProcessorCount();
+
 }

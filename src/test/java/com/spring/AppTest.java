@@ -2,9 +2,12 @@ package com.spring;
 
 import static org.junit.Assert.assertTrue;
 
+import com.spring.module.Category;
 import org.junit.Test;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,4 +70,30 @@ public class AppTest
         }
     }
 
+    @Test
+    public void test04() {
+        System.out.println(Category.class);
+        System.out.println(InterfaceA.class.isInterface());
+    }
+
+    @Test
+    public void fieldTest() throws ClassNotFoundException, IllegalAccessException {
+        Category category = new Category();
+        Field[] declaredFields = category.getClass().getDeclaredFields();
+        for (Field field : declaredFields) {
+            System.out.println(field);
+            Object type = field.getGenericType();
+            System.out.println("字段类型：" + type); // 获取字段类型
+            System.out.println(Class.forName("com.spring.test.module.User").equals(type));
+
+            System.out.println();
+        }
+
+        System.out.println(category);
+
+        Field field = declaredFields[0];
+        field.setAccessible(true);
+        field.set(category, "12");
+        System.out.println(category);
+    }
 }

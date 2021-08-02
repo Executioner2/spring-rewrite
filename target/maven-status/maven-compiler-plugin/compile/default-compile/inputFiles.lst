@@ -10,6 +10,7 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\ann
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\RootBeanDefinition.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\ObjectFactory.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\handler\MyAspect.java
+E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\annotation\Autowired.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\BeanDefinitionReaderUtils.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\config\BeanScan2.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\config\BeanScan.java
@@ -37,6 +38,7 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\facto
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\aa\bb\B.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\config\SingletonBeanRegistry.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\ApplicationContext.java
+E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\AbstractAutowireCapableBeanFactory.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\support\PostProcessorRegistrationDelegate.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\ConfigurableApplicationContext.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\annotation\ConfigurationClassParser.java

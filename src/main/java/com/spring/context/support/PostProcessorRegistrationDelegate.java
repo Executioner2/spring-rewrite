@@ -3,6 +3,7 @@ package com.spring.context.support;
 import com.spring.beans.factory.config.*;
 import com.spring.beans.factory.support.*;
 import com.spring.context.annotation.*;
+import com.spring.test.module.aa.A;
 
 import java.io.File;
 import java.net.URL;
@@ -33,7 +34,7 @@ final class PostProcessorRegistrationDelegate {
 
         // 包扫描，bean定义注册
         if (beanFactory instanceof BeanDefinitionRegistry) {
-            BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+            DefaultListableBeanFactory registry = (DefaultListableBeanFactory) beanFactory;
 
             List<Object> beanDefinitionScanList = new ArrayList();
 
@@ -190,6 +191,8 @@ final class PostProcessorRegistrationDelegate {
 
         // 1、先做beanPostProcessor实现类扫描
         Iterator<String> beanNamesIterator = beanFactory.getBeanNamesIterator();
+        // 暂存生成的beanPostProcessor对象
+        List<BeanPostProcessor> beanPostProcessorList = new ArrayList<>();
         DefaultListableBeanFactory dbf = (DefaultListableBeanFactory) beanFactory;
         while (beanNamesIterator.hasNext()) {
             String beanName = beanNamesIterator.next();
@@ -199,12 +202,21 @@ final class PostProcessorRegistrationDelegate {
             // 判断是否实现了BeanPostProcessor接口
             if (BeanPostProcessor.class.isAssignableFrom(beanClass)) {
                 // 2、生成beanPostProcessor实现类的单例bean
-                // 3、将bean添加到beanPostProcessors集合中去
-                // （此集合是进行了优先级排序的只装后置bean集合，与装单例bean的一级缓存是不同的）
-                // 这里暂时省略优先级排序
-                dbf.addBeanPostProcessor((BeanPostProcessor) dbf.getBean(beanName));
+                beanPostProcessorList.add((BeanPostProcessor) dbf.getBean(beanName));
             }
         }
+
+        // 3、将bean添加到beanPostProcessors集合中去
+        // （此集合是进行了优先级排序的只装后置bean集合，与装单例bean的一级缓存是不同的）
+        // 上面没有直接把生成的BeanPostProcessor对象放beanPostProcessors集合是为了
+        // 把所有的BeanPostProcessor实现类都创建了再放入，这样就不会再创建第二个的时候
+        // 执行到了第一个创建好了的BeanPostProcessor实现类的后置处理方法，因为这里只是
+        // 注册，不应该执行用户创建的BeanPostProcessor实现类方法
+        beanPostProcessorList.stream().forEach(item -> {
+            beanFactory.addBeanPostProcessor(item);
+        });
+
+        // 这里暂时省略优先级排序
 
     }
 }
