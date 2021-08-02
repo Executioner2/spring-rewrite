@@ -24,7 +24,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     // bean定义的bean全限定名集合
     private final List<String> beanDefinitionNames = new ArrayList<>(256);
 
-
+    /**
+     * 注册bean定义
+     * @param beanName
+     * @param beanDefinition
+     */
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
         if (this.isBeanNameInUse(beanName)) {
