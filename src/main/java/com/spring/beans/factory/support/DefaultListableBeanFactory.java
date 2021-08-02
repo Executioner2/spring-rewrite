@@ -75,6 +75,19 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     /**
+     * 实例化剩余所有非懒加载单例bean
+     */
+    @Override
+    public void preInstantiateSingletons() {
+        for (String beanName : this.beanDefinitionNames) {
+            BeanDefinition bd = this.beanDefinitionMap.get(beanName);
+            if (bd.isSingleton() && (!bd.isLazyInit())) {
+                getBean(beanName);
+            }
+        }
+    }
+
+    /**
      * 判断当前beanName是否在bean定义中
      * @param beanName
      * @return

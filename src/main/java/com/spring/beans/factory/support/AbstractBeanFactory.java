@@ -106,6 +106,10 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return null;
     }
 
+    /**
+     * 添加BeanPostProcessor到集合
+     * @param beanPostProcessor
+     */
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
         // 移除旧的bean后置处理器

@@ -16,4 +16,7 @@ public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory
 
     // 获取beanDefinition的迭代器
     Iterator<String> getBeanNamesIterator();
+
+    // 实例化剩余所有非懒加载单例bean
+    void preInstantiateSingletons();
 }
