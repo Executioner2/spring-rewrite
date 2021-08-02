@@ -106,7 +106,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
      */
     @Override
     public String[] getBeanDefinitionNames() {
-        return (String[]) this.beanDefinitionNames.toArray();
+        return this.beanDefinitionNames.toArray(String[]::new);
     }
 
     /**
@@ -117,6 +117,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     public int getBeanDefinitionCount() {
         return this.beanDefinitionNames.size();
     }
+
+
 
     /**
      * 判断beanName是否被使用
@@ -131,33 +133,23 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         return false;
     }
 
+    /**
+     * 注册单例对象
+     * @param beanName
+     * @param singletonObject
+     */
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
 
     }
 
+    /**
+     * 是否是单例bean
+     * @param beanName
+     * @return
+     */
     @Override
     public Object getSingleton(String beanName) {
         return getSingleton(beanName, true);
-    }
-
-    @Override
-    public boolean containsSingleton(String beanName) {
-        return false;
-    }
-
-    @Override
-    public String[] getSingletonNames() {
-        return new String[0];
-    }
-
-    @Override
-    public int getSingletonCount() {
-        return 0;
-    }
-
-    @Override
-    public Object getSingletonMutex() {
-        return null;
     }
 }

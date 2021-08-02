@@ -14,5 +14,10 @@ public class AppTest
     public static void main( String[] args ) {
 
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanScan.class, BeanScan2.class);
+
+        for (String name : applicationContext.getBeanDefinitionNames()) {
+            System.out.println(name);
+        }
+
     }
 }

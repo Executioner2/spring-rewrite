@@ -1,5 +1,6 @@
 package com.spring.beans.factory.support;
 
+import com.spring.beans.factory.BeanFactory;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
@@ -31,16 +32,26 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     @Override
     public boolean containsBean(String name) {
+//        return getBeanF;
         return false;
+
     }
 
     @Override
     public boolean isSingleton(String name) {
+        RootBeanDefinition mbd = this.getMergedBeanDefinition(name);
+        if (mbd != null) {
+            return mbd.isSingleton();
+        }
         return false;
     }
 
     @Override
     public boolean isPrototype(String name) {
+        RootBeanDefinition mbd = this.getMergedBeanDefinition(name);
+        if (mbd != null) {
+            return mbd.isPrototype();
+        }
         return false;
     }
 
@@ -49,11 +60,20 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return doGetBean(name);
     }
 
+    /**
+     * 获取bean类型
+     * @param name
+     * @return
+     */
     @Override
     public Class<?> getType(String name) {
-        return null;
+        return getMergedBeanDefinition(name).getBeanClass();
     }
 
+    /**
+     * 获取所有bean后置处理器
+     * @return
+     */
     protected List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
     }
@@ -154,9 +174,13 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return singleton;
     }
 
+    // 是否包含此bean定义
+    protected abstract boolean containsBeanDefinition(String beanName);
 
     // 创建bean对象
     protected abstract Object createBean(String beanName, RootBeanDefinition mbd, Object[] args);
+
+
 
     /**
      * 高并发下的list集合，利用内部类继承CopyOnWriteArrayList实现

@@ -53,12 +53,70 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
         // 9、注册监听器 TODO 待实现
         registerListeners();
 
-        // 10、完成所有非懒加载单例bean的实例化 TODO 待实现
+        // 10、完成所有非懒加载单例bean的实例化
         finishBeanFactoryInitialization(beanFactory);
 
         // 11、发布相应事件 TODO 待实现
         finishRefresh();
 
+    }
+
+    /**
+     * 获取bean定义总数量
+     * @return
+     */
+    @Override
+    public int getBeanDefinitionCount() {
+        return getBeanFactory().getBeanDefinitionCount();
+    }
+
+    /**
+     * 获取所有bean定义的bean名称
+     * @return
+     */
+    @Override
+    public String[] getBeanDefinitionNames() {
+        return getBeanFactory().getBeanDefinitionNames();
+    }
+
+    /**
+     * 是否包含此bean
+     * @param name
+     * @return
+     */
+    @Override
+    public boolean containsBean(String name) {
+        return getBeanFactory().containsBean(name);
+    }
+
+    /**
+     * 是否是单例bean
+     * @param name
+     * @return
+     */
+    @Override
+    public boolean isSingleton(String name) {
+        return getBeanFactory().isSingleton(name);
+    }
+
+    /**
+     * 是否是原型bean
+     * @param name
+     * @return
+     */
+    @Override
+    public boolean isPrototype(String name) {
+        return getBeanFactory().isPrototype(name);
+    }
+
+    /**
+     * 获取类型
+     * @param name
+     * @return
+     */
+    @Override
+    public Class<?> getType(String name) {
+        return getBeanFactory().getType(name);
     }
 
     /**
@@ -81,7 +139,7 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
      * @param beanFactory
      */
     protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
-
+        beanFactory.preInstantiateSingletons();
     }
 
     /**

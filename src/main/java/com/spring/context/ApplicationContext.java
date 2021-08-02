@@ -1,7 +1,7 @@
 package com.spring.context;
 
-public interface ApplicationContext {
+import com.spring.beans.factory.ListableBeanFactory;
 
-    // 根据beanName获取bean
-    Object getBean(String beanName);
+public interface ApplicationContext extends ListableBeanFactory {
+
 }

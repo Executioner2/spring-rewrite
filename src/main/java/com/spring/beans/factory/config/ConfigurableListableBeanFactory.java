@@ -1,5 +1,7 @@
 package com.spring.beans.factory.config;
 
+import com.spring.beans.factory.ListableBeanFactory;
+
 import java.util.Iterator;
 
 /**
@@ -10,7 +12,7 @@ import java.util.Iterator;
  * @Version: 1.0.0
  * @Description：
  */
-public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory{
+public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory, ListableBeanFactory {
     // 获取beanDefinition
     BeanDefinition getBeanDefinition(String beanName);
 

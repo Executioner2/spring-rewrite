@@ -53,44 +53,6 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
         return getSingleton(beanName, true);
     }
 
-    /**
-     * 是否有单例bean
-     * @param beanName
-     * @return
-     */
-    @Override
-    public boolean containsSingleton(String beanName) {
-        return false;
-    }
-
-    /**
-     * 获取所有已经注册的单例bean的name
-     * @return
-     */
-    @Override
-    public String[] getSingletonNames() {
-        return new String[0];
-    }
-
-    /**
-     * 获取已经注册了的单例bean数量
-     * @return
-     */
-    @Override
-    public int getSingletonCount() {
-        return 0;
-    }
-
-    /**
-     * 获取单例bean互斥锁
-     * 其实就是获取一级缓存
-     * @return
-     */
-    @Override
-    public Object getSingletonMutex() {
-        return this.singletonObjects;
-    }
-
 
     /**
      * TODO 暂不明白此方法的具体作用，先空着
@@ -205,7 +167,51 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
             this.singletonObjects.put(beanName, singletonObject);
             this.singletonFactories.remove(beanName);
             this.earlySingletonObjects.remove(beanName);
+            this.registeredSingletons.add(beanName);
         }
+    }
+
+    /**
+     * 是否包含此单例对象
+     * @param beanName
+     * @return
+     */
+    @Override
+    public boolean containsSingleton(String beanName) {
+        synchronized (this.singletonObjects) {
+            return this.registeredSingletons.contains(beanName);
+        }
+    }
+
+    /**
+     * 返回所有单例对象的名称
+     * @return
+     */
+    @Override
+    public String[] getSingletonNames() {
+        synchronized (this.singletonObjects) {
+            return (String[]) this.registeredSingletons.toArray();
+        }
+    }
+
+    /**
+     * 已注册的单例对象总数量
+     * @return
+     */
+    @Override
+    public int getSingletonCount() {
+        synchronized (this.singletonObjects) {
+            return this.registeredSingletons.size();
+        }
+    }
+
+    /**
+     * 获取单例对象锁
+     * @return
+     */
+    @Override
+    public final Object getSingletonMutex() {
+        return this.singletonObjects;
     }
 
     /**
