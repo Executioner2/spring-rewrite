@@ -3,6 +3,7 @@ package com.spring.beans.factory.support;
 import com.spring.beans.factory.InitializingBean;
 import com.spring.beans.factory.annotation.Autowired;
 import com.spring.beans.factory.config.BeanPostProcessor;
+import com.spring.util.ReflectionUtils;
 
 import java.lang.reflect.*;
 
@@ -177,6 +178,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     /**
      * 从二级缓存中拿实例对象/代理对象
+     * 实际上进到这个方法中就说明已经产生了循环依赖
+     * 那么只需要判断是否需要进行代理就可以了
      * @param beanName
      * @param mbd
      * @param bean
@@ -185,7 +188,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
         Object exposedObject = bean;
 
-        // TODO 判断是否需要提前创建代理对象
+        // 判断是否开启了动态代理
+
 
         return exposedObject;
     }
@@ -194,25 +198,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * 取消访问检查
      * @param ctor
      */
-    public static void makeAccessible(Constructor<?> ctor) {
-        if ((!Modifier.isPublic(ctor.getModifiers()) // 根据modifier（可见类型）判断构造方法是否是非公有
-                // 判断构造方法的类是否是非共有，构造方法是否取消了访问检查
-                || (!Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) && (!ctor.canAccess(null)))) {
-
-            ctor.setAccessible(true); // 取消访问检查
-        }
+    private void makeAccessible(Constructor<?> ctor) {
+        ReflectionUtils.makeAccessible(ctor);
     }
 
     /**
      * 取消访问检查
      * @param field
      */
-    public static void makeAccessible(Field field) {
-        if ((!Modifier.isPublic(field.getModifiers()))
-                || (!Modifier.isPublic(field.getDeclaringClass().getModifiers()))
-                || (Modifier.isFinal(field.getModifiers()) && field.canAccess(null))) {
-
-            field.setAccessible(true);
-        }
+    private void makeAccessible(Field field) {
+        ReflectionUtils.makeAccessible(field);
     }
 }

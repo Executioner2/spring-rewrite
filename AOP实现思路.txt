@@ -1,0 +1,17 @@
+# 以下为自己的AOP实现思路，非spring官方，仅供参考
+
+1、 扫描有Aspect注解的bean。
+
+2、 扫描此bean下有Around注解的方法。
+
+3、 根据execution表达式（用正则表达式实现）筛选出需要动态代理的类。
+
+4、 写一个实现InvocationHandler的类JdkDynamicAopProxy，
+    需要动态代理的类都由JdkDynamicAopProxy代理。
+
+5、 动态代理对象执行方法会执行JdkDynamicAopProxy中的invoke方法，
+    在此方法中判断是否是需要进行环绕通知的方法，如果是就执行对应的
+    Aspect注解bean中的对应方法。
+
+注：先省略Aspect注解bean的优先级排序，有可能存在多个Aspect注解bean
+    指向一个方法，需要进行循环执行，但执行顺序暂时按加载循序执行。

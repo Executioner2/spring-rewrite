@@ -21,8 +21,40 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     // bean定义集合
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
+    // 配置类
+    private final Map<String, Class<?>> configurationClassMap = new ConcurrentHashMap<>(256);
+
     // bean定义的bean全限定名集合
     private final List<String> beanDefinitionNames = new ArrayList<>(256);
+
+    /**
+     * 注册到配置类
+     * @param name
+     * @param clazz
+     */
+    @Override
+    public void registerConfigurationClassMap(String name, Class<?> clazz) {
+        this.configurationClassMap.put(name, clazz);
+    }
+
+    /**
+     * 获取配置类
+     * @param name
+     * @return
+     */
+    @Override
+    public Class<?> getConfigurationClass(String name) {
+        return this.configurationClassMap.get(name);
+    }
+
+    /**
+     * 获取配置类迭代器
+     * @return
+     */
+    @Override
+    public Iterator<String> getConfigurationClassMapKeySetIterator() {
+        return this.configurationClassMap.keySet().iterator();
+    }
 
     /**
      * 注册bean定义

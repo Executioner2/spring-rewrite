@@ -3,12 +3,9 @@ package com.spring.context.support;
 import com.spring.beans.factory.config.BeanFactoryPostProcessor;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.context.ConfigurableApplicationContext;
-import com.spring.context.annotation.ConfigurationClassPostProcessor;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class AbstractApplicationContext implements ConfigurableApplicationContext {
 
@@ -215,7 +212,7 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
 
     @Override
     public Object getBean(String beanName) {
-        return null;
+        return getBeanFactory().getBean(beanName);
     }
 
     public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors() {

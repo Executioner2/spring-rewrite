@@ -14,7 +14,6 @@ import java.util.Iterator;
  * @Description：bean定义注册
  */
 public interface BeanDefinitionRegistry {
-
     // 注册bean定义
     void registerBeanDefinition(String beanName, BeanDefinition beanDefinition);
 

@@ -1,6 +1,8 @@
 package com.spring.test.config;
 
 import com.spring.context.annotation.ComponentScan;
+import com.spring.context.annotation.Configuration;
+import com.spring.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @Program: spring-rewrite
@@ -11,5 +13,7 @@ import com.spring.context.annotation.ComponentScan;
  * @Description：
  */
 @ComponentScan({"com.spring.test.module", "com.spring.test.service"})
+@Configuration
+@EnableAspectJAutoProxy
 public class BeanScan {
 }

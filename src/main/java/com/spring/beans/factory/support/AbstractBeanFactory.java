@@ -164,9 +164,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
                     return createBean(beanName, mbd, null);
                 });
             }
-            // TODO 原型模式
+            // 原型模式
             else if (mbd.isPrototype()) {
-
+                return createBean(beanName, mbd, null);
             }
 
         }

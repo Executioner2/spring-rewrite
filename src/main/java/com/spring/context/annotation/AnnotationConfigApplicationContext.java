@@ -2,6 +2,7 @@ package com.spring.context.annotation;
 
 import com.spring.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.beans.factory.support.BeanDefinitionReaderUtils;
 import com.spring.beans.factory.support.BeanDefinitionRegistry;
 import com.spring.context.support.GenericApplicationContext;
@@ -42,6 +43,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
                 String beanName = BeanDefinitionReaderUtils.generateBeanName(beanDefinition);
                 // 注册到beanDefinitionMap中去
                 beanFactory.registerBeanDefinition(beanName, beanDefinition);
+                // 加入到配置类
+                ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) beanFactory;
+                factory.registerConfigurationClassMap(beanDefinition.getBeanClassName(), beanDefinition.getBeanClass());
             }
         }
     }

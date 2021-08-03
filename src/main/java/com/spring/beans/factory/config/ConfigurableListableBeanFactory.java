@@ -19,6 +19,15 @@ public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory
     // 获取beanDefinition的迭代器
     Iterator<String> getBeanNamesIterator();
 
+    // 获取配置类的迭代器
+    Iterator<String> getConfigurationClassMapKeySetIterator();
+
+    // 获取配置类
+    Class<?> getConfigurationClass(String name);
+
+    // 注册到配置类
+    void registerConfigurationClassMap(String name, Class<?> clazz);
+
     // 实例化剩余所有非懒加载单例bean
     void preInstantiateSingletons();
 }

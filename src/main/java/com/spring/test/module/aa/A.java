@@ -1,6 +1,8 @@
 package com.spring.test.module.aa;
 
+import com.spring.beans.factory.annotation.Autowired;
 import com.spring.context.annotation.Component;
+import com.spring.test.module.aa.bb.B;
 
 /**
  * @Program: spring-rewrite
@@ -12,4 +14,6 @@ import com.spring.context.annotation.Component;
  */
 @Component
 public class A {
+    @Autowired
+    public B b;
 }

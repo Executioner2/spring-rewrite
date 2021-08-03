@@ -4,8 +4,12 @@ import com.spring.beans.factory.config.*;
 import com.spring.beans.factory.support.*;
 import com.spring.context.annotation.*;
 import com.spring.test.module.aa.A;
+import com.spring.util.ReflectionUtils;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +37,13 @@ final class PostProcessorRegistrationDelegate {
             ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
         // 包扫描，bean定义注册
-        if (beanFactory instanceof BeanDefinitionRegistry) {
+        if (beanFactory instanceof DefaultListableBeanFactory) {
+
+            // 执行bean工厂后置处理方法
+            for (BeanFactoryPostProcessor beanFactoryPostProcessor : beanFactoryPostProcessors) {
+                beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+            }
+
             DefaultListableBeanFactory registry = (DefaultListableBeanFactory) beanFactory;
 
             List<Object> beanDefinitionScanList = new ArrayList();
@@ -82,7 +92,11 @@ final class PostProcessorRegistrationDelegate {
 
                 // 注册bean定义
                 registry.registerBeanDefinition(beanName, beanDefinition);
-
+                // 如果是配置类则加入到配置类集合
+                Class<?> beanClass = beanDefinition.getBeanClass();
+                if (beanClass.isAssignableFrom(Configuration.class)) {
+                    registry.registerConfigurationClassMap(beanDefinition.getBeanClassName(), beanDefinition.getBeanClass());
+                }
             });
 
             // 把所有beanDefinitionMap中的bean定义注册到mergedBeanDefinitions中
@@ -92,11 +106,57 @@ final class PostProcessorRegistrationDelegate {
                 String key = beanNamesIterator.next();
                 BeanDefinition beanDefinition = beanFactory.getBeanDefinition(key);
                 // 这里深度复制把ScannedGenericBeanDefinition转换为RootBeanDefinition就很cd
-                dbf.getMergedBeanDefinition(key, beanDefinition); // TODO 返回一个rootBeanDefinition
+                dbf.getMergedBeanDefinition(key, beanDefinition);
             }
-        }
 
+            // 配置类方法调用
+            Iterator<String> iterator = registry.getConfigurationClassMapKeySetIterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                Class<?> configurationClass = registry.getConfigurationClass(key);
+                // 是配置类
+                if (configurationClass.isAnnotationPresent(Configuration.class)) {
+                    // 做配置类注册
+                    // 获得所有的注解
+                    Annotation[] declaredAnnotations = configurationClass.getDeclaredAnnotations();
+                    // 配置类的注解中应该带有Import注解
+                    for (Annotation annotation : declaredAnnotations) {
+                        if (!annotation.getClass().isAnnotationPresent(Import.class)) {
+                            continue;
+                        }
+
+                        Import anImport = annotation.getClass().getDeclaredAnnotation(Import.class);
+                        // 导入的类
+                        Class<?>[] importObjectClass = anImport.value();
+                        for (Class<?> objectClass : importObjectClass) {
+                            try {
+                                // 是否实现了ImportBeanDefinitionRegistrar类
+                                if (objectClass.isAssignableFrom(ImportBeanDefinitionRegistrar.class)) {
+                                    continue;
+                                }
+
+                                Constructor<?> constructor = objectClass.getDeclaredConstructor();
+                                ReflectionUtils.makeAccessible(constructor);
+                                ImportBeanDefinitionRegistrar o = (ImportBeanDefinitionRegistrar) constructor.newInstance();
+                                // 在registerBeanDefinitions中对bean定义进行修改
+                                o.registerBeanDefinitions(registry);
+                            } catch (NoSuchMethodException e) {
+                                e.printStackTrace();
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            } catch (InstantiationException e) {
+                                e.printStackTrace();
+                            } catch (InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
     }
+
 
     /**
      * 进行包扫描并注册bean定义
