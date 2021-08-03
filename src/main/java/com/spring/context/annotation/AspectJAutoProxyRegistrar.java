@@ -18,6 +18,8 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
      */
     @Override
     public void registerBeanDefinitions(BeanDefinitionRegistry registry) {
+        // 1、取得代理路径
 
+        // 2、
     }
 }
