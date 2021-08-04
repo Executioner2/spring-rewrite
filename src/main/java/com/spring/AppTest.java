@@ -17,18 +17,18 @@ public class AppTest
 
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanScan.class, BeanScan2.class);
 
-        for (String name : applicationContext.getBeanDefinitionNames()) {
-            System.out.println(name);
-        }
-        A a = (A) applicationContext.getBean("a");
-        B b = (B) applicationContext.getBean("b");
-
-        System.out.println("a：" + a);
-        System.out.println("b："+ b);
-
-        System.out.println("==============");
-        System.out.println("a中b：" + a.b);
-        System.out.println("b中a：" + b.a);
+//        for (String name : applicationContext.getBeanDefinitionNames()) {
+//            System.out.println(name);
+//        }
+//        A a = (A) applicationContext.getBean("a");
+//        B b = (B) applicationContext.getBean("b");
+//
+//        System.out.println("a：" + a);
+//        System.out.println("b："+ b);
+//
+//        System.out.println("==============");
+//        System.out.println("a中b：" + a.b);
+//        System.out.println("b中a：" + b.a);
 
 
     }

@@ -27,6 +27,7 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
 
     /**
      * 在这里标记需要代理的类
+     * 执行到这个方法代表开启了aop
      * @param registry
      */
     @Override

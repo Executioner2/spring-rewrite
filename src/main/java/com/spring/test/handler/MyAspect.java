@@ -4,6 +4,8 @@ import com.spring.aspectj.lang.annotation.Around;
 import com.spring.aspectj.lang.annotation.Aspect;
 import com.spring.context.annotation.Component;
 
+import java.util.Date;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -21,5 +23,8 @@ public class MyAspect {
 
     }
 
-//    @Around("execution(public com.spring.test)")
+    @Around("execution(public com.spring.test)")
+    private static String pointcut02(String str, Date create) {
+        return "";
+    }
 }
