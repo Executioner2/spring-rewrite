@@ -1,9 +1,10 @@
 package com.spring.context.support;
 
+import com.spring.aspectj.lang.annotation.Aspect;
 import com.spring.beans.factory.config.*;
-import com.spring.beans.factory.support.*;
+import com.spring.beans.factory.support.BeanDefinitionReaderUtils;
+import com.spring.beans.factory.support.DefaultListableBeanFactory;
 import com.spring.context.annotation.*;
-import com.spring.test.module.aa.A;
 import com.spring.util.ReflectionUtils;
 
 import java.io.File;
@@ -92,6 +93,7 @@ final class PostProcessorRegistrationDelegate {
 
                 // 注册bean定义
                 registry.registerBeanDefinition(beanName, beanDefinition);
+
                 // 如果是配置类则加入到配置类集合
                 Class<?> beanClass = beanDefinition.getBeanClass();
                 if (beanClass.isAssignableFrom(Configuration.class)) {
@@ -117,15 +119,15 @@ final class PostProcessorRegistrationDelegate {
                 // 是配置类
                 if (configurationClass.isAnnotationPresent(Configuration.class)) {
                     // 做配置类注册
-                    // 获得所有的注解
+                    // 获得所有的注解，注意这里获得的是代理注解类，需要用annotationType()获取原始注解
                     Annotation[] declaredAnnotations = configurationClass.getDeclaredAnnotations();
                     // 配置类的注解中应该带有Import注解
                     for (Annotation annotation : declaredAnnotations) {
-                        if (!annotation.getClass().isAnnotationPresent(Import.class)) {
+                        if (!annotation.annotationType().isAnnotationPresent(Import.class)) {
                             continue;
                         }
 
-                        Import anImport = annotation.getClass().getDeclaredAnnotation(Import.class);
+                        Import anImport = annotation.annotationType().getDeclaredAnnotation(Import.class);
                         // 导入的类
                         Class<?>[] importObjectClass = anImport.value();
                         for (Class<?> objectClass : importObjectClass) {

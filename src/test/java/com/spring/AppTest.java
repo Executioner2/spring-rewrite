@@ -2,11 +2,15 @@ package com.spring;
 
 import static org.junit.Assert.assertTrue;
 
+import com.spring.annotation.A;
+import com.spring.context.annotation.Import;
 import com.spring.module.Category;
 import org.junit.Test;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -95,5 +99,38 @@ public class AppTest
         field.setAccessible(true);
         field.set(category, "12");
         System.out.println(category);
+    }
+
+    @Test
+    public void methodTest() {
+        Category category = new Category();
+        Method[] declaredMethods = category.getClass().getDeclaredMethods();
+        for (Method method : declaredMethods) {
+            System.out.println(method.getName());
+            System.out.println(method);
+            System.out.println();
+        }
+    }
+    @Test
+    public void annotationTest() {
+//        Annotation[] declaredAnnotations = A.class.getDeclaredAnnotations();
+//        for (Annotation annotation : declaredAnnotations) {
+//            System.out.println(annotation);
+//        }
+//        System.out.println(A.class.isAnnotationPresent(Import.class));
+
+        Annotation[] declaredAnnotations = A.class.getDeclaredAnnotations();
+        for (Annotation annotation : declaredAnnotations) {
+            Class<? extends Annotation> aClass = annotation.annotationType();
+            System.out.println(aClass.isAnnotationPresent(Import.class));
+//            System.out.println(annotation.getClass().isAssignableFrom());
+//            Annotation[] declaredAnnotations1 = annotation.getClass().getDeclaredAnnotations();
+//            for (Annotation annotation1 : declaredAnnotations1) {
+//                System.out.println(annotation1);
+//            }
+//            System.out.println(annotation);
+//            System.out.println(annotation.getClass().isAnnotationPresent(Import.class));
+        }
+
     }
 }

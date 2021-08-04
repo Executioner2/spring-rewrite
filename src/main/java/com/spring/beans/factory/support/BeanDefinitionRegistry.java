@@ -17,6 +17,8 @@ public interface BeanDefinitionRegistry {
     // 注册bean定义
     void registerBeanDefinition(String beanName, BeanDefinition beanDefinition);
 
+    void registerBeanDefinition(Class<?> beanClass, BeanDefinition beanDefinition);
+
     // 移除bean定义
     void removeBeanDefinition(String beanName);
 

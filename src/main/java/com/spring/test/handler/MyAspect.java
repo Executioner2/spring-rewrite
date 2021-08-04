@@ -1,26 +1,25 @@
 package com.spring.test.handler;
 
-import com.spring.beans.factory.config.BeanPostProcessor;
+import com.spring.aspectj.lang.annotation.Around;
+import com.spring.aspectj.lang.annotation.Aspect;
 import com.spring.context.annotation.Component;
 
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
- * @Time: 2021/7/30  22:20
+ * @Time: 2021/8/4  18:20
  * @Copyright：Copyright(c) 1205878539@qq.com
  * @Version: 1.0.0
  * @Description：
  */
+@Aspect
 @Component
-public class MyAspect implements BeanPostProcessor {
+public class MyAspect {
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        return bean;
+    @Around("execution(* com.spring.test..*(..))")
+    public void pointcut() {
+
     }
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) {
-        return bean;
-    }
+//    @Around("execution(public com.spring.test)")
 }

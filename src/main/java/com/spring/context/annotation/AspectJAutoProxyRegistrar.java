@@ -1,6 +1,19 @@
 package com.spring.context.annotation;
 
+import com.spring.aop.framework.support.AopDefinitionRegistry;
+import com.spring.aspectj.lang.annotation.Around;
+import com.spring.aspectj.lang.annotation.Aspect;
+import com.spring.aspectj.lang.support.PointcutDefinition;
+import com.spring.beans.factory.annotation.AnnotatedGenericBeanDefinition;
+import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.beans.factory.support.BeanDefinitionRegistry;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @Program: spring-rewrite
@@ -18,7 +31,54 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
      */
     @Override
     public void registerBeanDefinitions(BeanDefinitionRegistry registry) {
-        // 1、取得代理路径
+
+        if (!(registry instanceof ConfigurableListableBeanFactory)) {
+            throw new IllegalStateException("registry类型错误！");
+        }
+
+        ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) registry;
+
+        // 注册aop工厂到单例池中
+        AnnotatedGenericBeanDefinition definition = new AnnotatedGenericBeanDefinition();
+        definition.setBeanClass(AopDefinitionRegistry.class);
+        // 内部单例对象，beanName用全限定名
+        registry.registerBeanDefinition(AopDefinitionRegistry.class, definition);
+        // AOP注册bean
+        AopDefinitionRegistry aopRegistry = (AopDefinitionRegistry) factory.getBean(AopDefinitionRegistry.class);
+
+        Iterator<String> iterator = factory.getBeanNamesIterator();
+
+        // 进行AOP扫描
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            BeanDefinition beanDefinition = factory.getBeanDefinition(key);
+            Class<?> beanClass = beanDefinition.getBeanClass();
+            if (!beanClass.isAnnotationPresent(Aspect.class)) {
+                continue;
+            }
+            // 注册切面
+            aopRegistry.registerAspectNameList(beanClass.toString());
+
+            // 扫面切入点
+            Method[] methods = beanClass.getDeclaredMethods();
+            List<PointcutDefinition> pointcutDefinitions = new ArrayList<>();
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Around.class)) {
+                    if (Modifier.isFinal(method.getModifiers())) { // 是不是final修饰的，如果是则跳过
+                        continue;
+                    }
+
+                    Around around = method.getDeclaredAnnotation(Around.class);
+                    pointcutDefinitions.add(new PointcutDefinition(around.value(), method, beanClass));
+
+                    // 扫描连接点
+                    System.out.println(method.toString());
+                }
+            }
+
+            // 注册一个切面中的所有切入点
+            aopRegistry.registerPointcutDefinitionMap(beanClass.toString(), pointcutDefinitions);
+        }
 
         // 2、
     }

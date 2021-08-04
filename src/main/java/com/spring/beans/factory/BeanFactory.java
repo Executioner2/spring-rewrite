@@ -11,6 +11,8 @@ package com.spring.beans.factory;
 public interface BeanFactory {
     Object getBean(String name);
 
+    Object getBean(Class<?> beanClass);
+
     boolean containsBean(String name);
 
     boolean isSingleton(String name);

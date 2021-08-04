@@ -4,6 +4,7 @@ import com.spring.beans.factory.BeanFactory;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 
 import java.util.Collection;
@@ -57,7 +58,12 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     @Override
     public Object getBean(String name) {
-        return doGetBean(name);
+        return doGetBean(name, null, null);
+    }
+
+    @Override
+    public Object getBean(Class<?> beanClass) {
+        return doGetBean(beanClass.getName(), beanClass, null);
     }
 
     /**
@@ -106,7 +112,15 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      * @return
      */
     public RootBeanDefinition getMergedBeanDefinition(String beanName) {
-        return this.mergedBeanDefinitions.get(beanName);
+        RootBeanDefinition rootBeanDefinition = this.mergedBeanDefinitions.get(beanName);
+        if (rootBeanDefinition == null) {
+            if (this instanceof ConfigurableListableBeanFactory) {
+                ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) this;
+                BeanDefinition beanDefinition = factory.getBeanDefinition(beanName);
+                rootBeanDefinition = this.getMergedBeanDefinition(beanName, beanDefinition);
+            }
+        }
+        return rootBeanDefinition;
     }
 
     /**
@@ -144,19 +158,36 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     /**
+     * 获取mbd
+     * @param name
+     * @param requiredType
+     * @return
+     */
+    private RootBeanDefinition tryGetMergedBeanDefinition(String name, Class<?> requiredType) {
+        RootBeanDefinition mbd = null;
+        if (requiredType != null) {
+            mbd = this.getMergedBeanDefinition(requiredType.getName());
+        } else {
+            mbd = this.getMergedBeanDefinition(name);
+        }
+        return mbd;
+    }
+
+    /**
      * 获取bean对象，spring官方源码有更多参数，
      * 这里先进行简单实现，复杂的处理等后续完善
      * @param beanClassName
+     * @param
      * @return
      */
-    protected Object doGetBean(String beanClassName) {
+    protected Object doGetBean(String beanClassName, Class<?> requiredType, Object[] args) {
         // 获取beanName，因为传来的可能是全限定名称，那么就需要进行剪切。不是则返回原来的beanName
         String beanName = BeanDefinitionReaderUtils.generateBeanName(beanClassName);
         // 1、先尝试获取单例对象
         Object singleton = this.getSingleton(beanName);
         if (singleton == null) {
             // 为空则创建对象，先从mergedBeanDefinitions中取得rootBeanDefinition
-            RootBeanDefinition mbd = this.getMergedBeanDefinition(beanName);
+            RootBeanDefinition mbd = this.tryGetMergedBeanDefinition(beanName, requiredType);
 
             // 单例模式
             if (mbd.isSingleton()) {

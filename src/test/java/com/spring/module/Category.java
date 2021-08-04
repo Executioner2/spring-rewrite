@@ -47,6 +47,17 @@ public class Category {
         this.createDate = createDate;
     }
 
+    /**
+     * 用来测试的方法
+     * @param name
+     * @param createDate
+     * @return
+     */
+    private static String search(String name, Date createDate) {
+
+        return "";
+    }
+
     @Override
     public String toString() {
         return "Category{" +

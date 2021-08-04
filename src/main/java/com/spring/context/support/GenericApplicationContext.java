@@ -51,6 +51,16 @@ public abstract class GenericApplicationContext extends AbstractApplicationConte
     }
 
     /**
+     * 注册bean定义
+     * @param beanClass
+     * @param beanDefinition
+     */
+    @Override
+    public void registerBeanDefinition(Class<?> beanClass, BeanDefinition beanDefinition) {
+        this.beanFactory.registerBeanDefinition(beanClass, beanDefinition);
+    }
+
+    /**
      * 移除bean定义
      * @param beanName
      */

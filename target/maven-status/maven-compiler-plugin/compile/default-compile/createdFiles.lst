@@ -9,7 +9,10 @@ com\spring\test\config\BeanScan.class
 com\spring\beans\factory\BeanFactory.class
 com\spring\beans\factory\annotation\Autowired.class
 com\spring\util\ReflectionUtils.class
+com\spring\aspectj\lang\annotation\Aspect.class
 com\spring\beans\factory\config\ConfigurableListableBeanFactory.class
+com\spring\aspectj\lang\support\PointcutDefinition.class
+com\spring\aop\framework\AopRegistry.class
 com\spring\context\support\AbstractApplicationContext.class
 com\spring\test\handler\MyAspect.class
 com\spring\beans\factory\support\RootBeanDefinition.class
@@ -17,11 +20,13 @@ com\spring\context\ApplicationContext.class
 com\spring\context\ConfigurableApplicationContext.class
 com\spring\context\annotation\AnnotationConfigApplicationContext.class
 com\spring\context\annotation\Component.class
+com\spring\aop\framework\support\AopDefinitionRegistry.class
 com\spring\context\annotation\Configuration.class
 com\spring\beans\factory\support\AbstractBeanFactory$BeanPostProcessorCacheAwareList.class
 com\spring\aop\framework\JdkDynamicAopProxy.class
 com\spring\AppTest.class
 com\spring\beans\factory\annotation\AnnotatedGenericBeanDefinition.class
+com\spring\aop\framework\AbstractAopRegistry.class
 com\spring\beans\factory\support\AbstractBeanDefinition.class
 com\spring\test\service\UserService.class
 com\spring\aspectj\lang\ProceedingJoinPoint.class
@@ -37,6 +42,7 @@ com\spring\test\service\ProductService.class
 com\spring\beans\factory\config\SingletonBeanRegistry.class
 com\spring\context\annotation\ScannedGenericBeanDefinition.class
 com\spring\beans\factory\InitializingBean.class
+com\spring\test\handler\MyPostProcessor.class
 com\spring\beans\factory\ListableBeanFactory.class
 com\spring\beans\factory\support\DefaultListableBeanFactory.class
 com\spring\context\annotation\EnableAspectJAutoProxy.class
@@ -54,4 +60,4 @@ com\spring\beans\factory\support\DefaultSingletonBeanRegistry.class
 com\spring\beans\factory\config\BeanDefinition.class
 com\spring\beans\factory\config\BeanFactoryPostProcessor.class
 com\spring\beans\factory\config\BeanPostProcessor.class
-com\spring\context\annotation\ConfigurationClassPostProcessor.class
+com\spring\aspectj\lang\annotation\Around.class

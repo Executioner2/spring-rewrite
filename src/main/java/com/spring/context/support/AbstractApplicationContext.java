@@ -215,6 +215,11 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
         return getBeanFactory().getBean(beanName);
     }
 
+    @Override
+    public Object getBean(Class<?> beanClass) {
+        return getBeanFactory().getBean(beanClass);
+    }
+
     public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors() {
         return beanFactoryPostProcessors;
     }

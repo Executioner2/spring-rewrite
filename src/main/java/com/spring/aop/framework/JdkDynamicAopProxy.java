@@ -1,8 +1,10 @@
 package com.spring.aop.framework;
 
 import java.io.Serializable;
+import java.lang.annotation.Target;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * @Program: spring-rewrite
@@ -14,6 +16,19 @@ import java.lang.reflect.Method;
  */
 final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializable {
     private static final long serialVersionUID = -3092292718628437361L;
+
+    // 被代理的类的所有接口
+    private final Class<?>[] proxiedInterfaces;
+
+    // 目标对象
+    private Object target;
+
+    public JdkDynamicAopProxy(Object target) {
+        this.target = target;
+        // 获取所有接口
+        this.proxiedInterfaces = target.getClass().getInterfaces();
+    }
+
 
     /**
      * 取得代理对象
@@ -31,7 +46,8 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
      */
     @Override
     public Object getProxy(ClassLoader classLoader) {
-        return null;
+
+        return Proxy.newProxyInstance(classLoader, this.proxiedInterfaces, this);
     }
 
     /**

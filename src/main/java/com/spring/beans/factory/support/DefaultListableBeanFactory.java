@@ -72,6 +72,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     /**
+     * 注册bean定义
+     * @param beanClass
+     * @param beanDefinition
+     */
+    @Override
+    public void registerBeanDefinition(Class<?> beanClass, BeanDefinition beanDefinition) {
+        this.registerBeanDefinition(beanClass.getName(), beanDefinition);
+    }
+
+    /**
      * 移除beanDefinition，
      * 把map和list中的信息都移除
      * @param beanName
@@ -95,7 +105,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         if (beanDefinition == null) {
             throw new NullPointerException("bean定义不存在"); // XXX 将就抛空指针异常
         }
-        return beanDefinition;
+        return this.beanDefinitionMap.get(beanName);
     }
 
     /**

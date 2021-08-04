@@ -1,6 +1,8 @@
-com\spring\AppTest.class
 com\spring\InterfaceA.class
-com\spring\module\Category.class
-com\spring\Application.class
+com\spring\annotation\A.class
 com\spring\AbstractB.class
 com\spring\AbstractBImpl.class
+com\spring\AppTest.class
+com\spring\module\Category.class
+com\spring\annotation\B.class
+com\spring\Application.class
