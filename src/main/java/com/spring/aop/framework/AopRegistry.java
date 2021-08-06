@@ -1,6 +1,7 @@
 package com.spring.aop.framework;
 
 import com.spring.aspectj.lang.support.PointcutDefinition;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -37,5 +38,8 @@ public interface AopRegistry {
 
     // 注册连接点
     void registerJoinPointDefinitionMap(String className, List<String> joinPoints);
+
+    // 扫描连接点
+    void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE);
 
 }

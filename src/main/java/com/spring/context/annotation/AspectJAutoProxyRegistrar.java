@@ -8,6 +8,7 @@ import com.spring.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.beans.factory.support.BeanDefinitionRegistry;
+import com.spring.aop.framework.AspectExecutionEUtil;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -71,9 +72,30 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
 
                     Around around = method.getDeclaredAnnotation(Around.class);
                     pointcutDefinitions.add(new PointcutDefinition(around.value(), method, beanClass));
+                    String executionE = around.value();
 
-                    // 扫描连接点
-                    System.out.println(method.toString());
+                    if (executionE == null) {
+                        throw new IllegalStateException("execution表达式不能为空！");
+                    }
+
+                    // 判断是execution表达式还是方法
+                    if (executionE.startsWith("execution(") && executionE.endsWith(")")) {
+                        executionE = executionE.substring(0, executionE.lastIndexOf(")"))
+                                .replaceFirst("execution\\(", "");
+
+                        // 判断execution表达式的格式是否正确
+                        if (!AspectExecutionEUtil.isLegalExecution(executionE)) {
+                            throw new IllegalStateException("非法的execution表达式：" + executionE);
+                        }
+
+                        // 进行连接点扫描
+                        aopRegistry.scanJoinPoint(factory, executionE);
+
+
+                    } else {
+                        // TODO 是方法，扫描方法上的execution表达式
+                    }
+
                 }
             }
 
@@ -81,6 +103,5 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
             aopRegistry.registerPointcutDefinitionMap(beanClass.toString(), pointcutDefinitions);
         }
 
-        // 2、
     }
 }

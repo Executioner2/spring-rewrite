@@ -12,7 +12,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -100,6 +102,44 @@ public class AppTest
         field.set(category, "12");
         System.out.println(category);
     }
+
+    @Test
+    public void strTest() {
+//        String s = "com(12, 32)";
+//
+//        String substring = s.substring(s.indexOf("(") + 1, s.indexOf(")"));
+//        System.out.println(substring);
+//        System.out.println(s);
+//
+//        String s1 = "int, byte, short";
+//        String[] split = s1.split(",");
+//        for (int i = 0; i < split.length; i++) {
+//            split[i] = split[i].strip();
+//        }
+//        for (String s2 : split) {
+//            System.out.println(s2);
+//        }
+
+        String s = "1,2,3,4,5,";
+        // 目标：删除最后一个 ","
+        s = s.substring(0, s.length() - 1);
+        System.out.println(s);
+
+    }
+
+    @Test
+    public void basicDataTypeTest() {
+        System.out.println(Integer.class);
+        System.out.println(Byte.class);
+        System.out.println(String.class);
+        System.out.println(Long.class);
+        System.out.println(Double.class);
+        System.out.println(Float.class);
+        System.out.println(Short.class);
+        System.out.println(Character.class);
+
+    }
+
 
     @Test
     public void methodTest() {

@@ -43,7 +43,7 @@ public class Category {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
@@ -53,7 +53,7 @@ public class Category {
      * @param createDate
      * @return
      */
-    private static String search(String name, Date createDate) {
+    private static String search(String name, int createDate) throws Exception{
 
         return "";
     }

@@ -23,7 +23,12 @@ public class MyAspect {
 
     }
 
-    @Around("execution(public com.spring.test)")
+    @Around("execution(* set*(..)")
+    public void pointcut02() {
+
+    }
+
+    @Around("execution(public * *(..))")
     private static String pointcut02(String str, Date create) {
         return "";
     }

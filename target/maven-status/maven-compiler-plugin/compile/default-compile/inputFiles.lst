@@ -44,6 +44,7 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\facto
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\ObjectFactory.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aspectj\lang\ProceedingJoinPoint.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\handler\MyAspect.java
+E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aop\framework\AspectExecutionEUtil.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\annotation\Autowired.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\config\BeanScan.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\annotation\Scope.java

@@ -1,12 +1,14 @@
 package com.spring.aop.framework;
 
 import com.spring.aspectj.lang.support.PointcutDefinition;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * @Program: spring-rewrite
@@ -26,6 +28,17 @@ public abstract class AbstractAopRegistry implements AopRegistry{
     // 连接点集合
     private final Map<String, List<String>> joinPointDefinitionMap = new ConcurrentHashMap<>(24);
 
+
+    /**
+     * 扫描连接点
+     * @param factory
+     * @param executionE
+     */
+    @Override
+    public void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE) {
+        // 取得executionE的正则表达式
+        Pattern pattern = AspectExecutionEUtil.getExecutionERegex(executionE);
+    }
 
     /**
      * 取得joinPointDefinitionMap的迭代器

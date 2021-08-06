@@ -17,6 +17,8 @@ public class AppTest
 
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanScan.class, BeanScan2.class);
 
+        System.out.println("");
+
 //        for (String name : applicationContext.getBeanDefinitionNames()) {
 //            System.out.println(name);
 //        }
