@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Unit test for simple App.
@@ -144,6 +146,34 @@ public class AppTest
 
     }
 
+    @Test
+    public void regexTest() {
+        Long start = System.currentTimeMillis();
+        String str = "private static java.lang.String com.spring.module.Category.search(java.lang.String,int) java.lang.Exception,java.lang.IllegalAccessError";
+
+        String pattern = "^(((public|private|default|protected|\\*) )?((\\w+ )*|\\* )?(((\\w|\\.)+|\\*) )(\\w|\\*|\\.)+\\(((\\w|\\.|\\*)(, *\\w| *,\\w)?)+\\)( (((\\w|\\.|\\*)(, *\\w| *,\\w)?))+)?)$";
+
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(str);
+        Long end = System.currentTimeMillis();
+        System.out.println(m.matches());
+
+        System.out.println("耗时：" + (end - start));
+
+// ^(
+// ((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+
+// \(
+// ((\.\.)|(((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+((, *| *,)((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+)*))
+// \)
+// )$
+
+// ^(((public|private|default|protected|\*) )?(((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+ ){1}(((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+)\(((\.\.)|(((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+((, *| *,)((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+)*))\)( ((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+((, *| *,)((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+)*)?)$
+
+// ( ((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+((, *| *,)((\*\.\.|\*)?(\w+|\.\w+|\.\*)\*?(\.\.\*)?)+)*)?
+
+        // (((\*\.\.|\.)?\w|\*?(\.\.\*)?)+\(((\.\.)|(((\*\.\.|\.|)?\*?\w(\.|\*)?(\.\.\*)?)+(( *, *((\*\.\.|\.|)?\*?\w(\.|\*)?(\.\.\*)?)+)+)?){1})\))
+    }
+// (((public|private|default|protected|\*) )?(((\*\.\.|\.)?\w|\*?(\.\.\*)?)+ )(((\*\.\.|\.)?\w|\*?(\.\.\*)?)+\(((\.\.)|(((\*\.\.|\.|)?\*?\w(\.|\*)?(\.\.\*)?)+(( *, *((\*\.\.|\.|)?\*?\w(\.|\*)?(\.\.\*)?)+)+)?){1})\))( ((\*\.\.|\.|)?\*?\w(\.|\*)?(\.\.\*)?)+(( *, *((\*\.\.|\.|)?\*?\w(\.|\*)?(\.\.\*)?)+)+)?)?)
 
     @Test
     public void methodTest() {

@@ -15,10 +15,10 @@ import java.util.regex.Pattern;
  */
 final public class AspectExecutionEUtil {
     // execution表达式合法性检测的正则表达式
-    final private static String EXECUTION_E = "^(((public|private|default|protected|\\\\*) )?((\\\\w+ )*|\\\\* )?(((\\\\w|\\\\.)+|\\\\*) )(\\\\w|\\\\*|\\\\.)+\\\\((\\\\w|,|\\\\.| )+\\\\)( (\\\\w|\\\\.|\\\\*)+)?)$";
+    final private static String EXECUTION_E = "^(((public|private|default|protected|\\\\*) )?(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+ )(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+\\\\(((\\\\.\\\\.)|(((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?))\\\\))( ((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?)?)$";
 
     // 方法正则表达式
-    final private static String METHOD_E = "^((\\\\w|\\\\*)+)$";
+    final private static String METHOD_E = "^((\\\\*?\\\\w+\\\\*?)+)$";
 
     // 访问权限正则表达式
     final private static String ACCESS_RIGHT = "^(public|private|default|protected|\\\\*)$";
@@ -31,8 +31,6 @@ final public class AspectExecutionEUtil {
 
     // 访问权限正则表达式对象
     final public static Pattern accessRightRegex = Pattern.compile(ACCESS_RIGHT);
-
-    private AspectExecutionEUtil() {}
 
     // 数据类型对照表
     private final static Map<String, String> basicDataTypeComparisonTable = new HashMap<>();
@@ -52,6 +50,9 @@ final public class AspectExecutionEUtil {
     // 异常：( throws (\\w|\\.|,)+)?
     private final static String THROW_PATTERN = "( throws (\\\\w|\\\\.|,)+)?";
 
+    /**
+     * 初始化数据类型对照表
+     */
     static {
         basicDataTypeComparisonTable.put("Byte", "java.lang.Byte");
         basicDataTypeComparisonTable.put("Character", "java.lang.Character");
@@ -62,6 +63,8 @@ final public class AspectExecutionEUtil {
         basicDataTypeComparisonTable.put("Double", "java.lang.Double");
         basicDataTypeComparisonTable.put("String", "java.lang.String");
     }
+
+    private AspectExecutionEUtil() {}
 
     /**
      * 判断execution表达式是否是合法的
@@ -93,35 +96,29 @@ final public class AspectExecutionEUtil {
      * ^(((public|private|default|protected|\\*) )?((\\w+ )*|\\* )?(((\\w|\\.)+|\\*) )(\\w|\\*|\\.)+\\((\\w|,|\\.| )+\\)( (\\w|\\.|\\*)+)?)$
      *
      * execution表达式为四部分（这里融合全限定类名和方法）
-     * 1、访问权限类型+其它修饰符（可选）             ((public|private|default|protected|\\*) )?((\\w+ )*|\\* )?
+     * 1、访问权限类型（可选）+其它修饰符（隐性的默认全匹配）           ((public|private|default|protected|\\*) )?((\\w+ )*|\\* )?
      * 2、返回值类型（必选）              (((\\w|\\.)+|\\*) )
      * 3、全限定类名（可选）+ 方法（必选）  (\\w|\\*|\\.)+\\((\\w|,|\\.| )+\\)
      * 4、异常类型（可选）               ( (\\w|\\.|\\*)+)?
      *
-     * 由于全限定类名和方法是粘连在一起的，所以最少可以拆分成两个部分，
-     * 因为其它修饰符数量理论无上限，所以拆分的数量理论上也无上限。
+     * 由于全限定类名和方法是粘连在一起的，所以最多可以拆分成四个部分，
+     * 开发人员不写其它修饰符的匹配，隐性默认全匹配。
      * @param executionE
      * @return
      */
     public static Pattern getExecutionERegex(String executionE) {
-        String modifiersPattern = MODIFIERS_PATTERN; // 访问权限
-        String optionalModifiersPattern = OPTIONAL_MODIFIERS_PATTERN; // 可选修饰符
-        String retTypePattern = RET_TYPE_PATTERN; // 返回值类型
-        String namePattern = NAME_PATTERN; // 全限定类名.方法名(形参)
-        String throwPattern = THROW_PATTERN; // 异常
+        String modifiersPattern = ""; // 访问权限
+        String retTypePattern = ""; // 返回值类型
+        String namePattern = ""; // 全限定类名.方法名(形参)
+        String throwPattern = ""; // 异常
 
         // 通过空格拆分判断哪些要匹配
         String[] strings = executionE.split(" ");
         if (strings.length == 2) {
-
-            // 替换返回值类型
-            retTypePattern = editRetTypePattern(strings[0]);
-
-            // 取出形参
-            namePattern = editNamePattern(strings[1]);
+            retTypePattern = strings[0];
+            namePattern = strings[1];
 
         } else if (strings.length == 3) {
-
             // 替换访问权限类型
             // * * com.study.User.setName(java.lang.String)
             // 明明可以省略访问权限类型的却非要用个*号，上面这种还好，恰好第一个就是想要的访问权限类型
@@ -130,29 +127,77 @@ final public class AspectExecutionEUtil {
             // 如果包含就是奇怪写法，如果不包含就是预期写法。
             // 包含访问权限类型
             if (accessRightRegex.matcher(strings[0]).matches()
-                    && strings[1].indexOf("(") == -1 && !strings[1].endsWith(")")) {
+                    && isNamePattern(strings[1])) {
 
-                modifiersPattern = editModifiersPattern(strings[0]); // 替换访问权限类型
-                retTypePattern = editRetTypePattern(strings[1]);
-                namePattern = editNamePattern(strings[2]);
+                modifiersPattern = strings[0];
+                retTypePattern = strings[1];
+                namePattern = strings[2];
 
             } else {
                 // 不包含访问权限类型，那么就包含抛出什么类型的异常
+                retTypePattern = strings[0];
+                namePattern = strings[1];
+                throwPattern = strings[2];
+
             }
 
         } else if (strings.length == 4){
             // 所有参数都写了
+            modifiersPattern = strings[0];
+            retTypePattern = strings[1];
+            namePattern = strings[2];
+            throwPattern = strings[3];
 
         } else {
             throw new IllegalStateException("execution表达式有误！" + executionE);
         }
 
 
-        executionE = "^(" + modifiersPattern + optionalModifiersPattern + retTypePattern + namePattern + throwPattern + ")&";
+        modifiersPattern = editModifiersPattern(modifiersPattern); // 编辑访问权限正则表达式
+        retTypePattern = editRetTypePattern(retTypePattern); // 编辑返回类型的正则表达式
+        namePattern = editNamePattern(namePattern); // 编辑全限定类名.方法(形参)的正则表达式
+        throwPattern = editThrowPattern(throwPattern); // 编辑异常的正则表达式
+
+        executionE = "^(" + modifiersPattern + OPTIONAL_MODIFIERS_PATTERN + retTypePattern + namePattern + throwPattern + ")&";
 
         System.out.println(executionE);
 
         return Pattern.compile(executionE);
+    }
+
+    /**
+     * 是否是方法
+     * @param val
+     * @return
+     */
+    private static boolean isNamePattern(String val) {
+        if (val == null || "".equals(val)) {
+            return false;
+        }
+
+        if (val.indexOf("(") != -1 && val.endsWith(")")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 编辑异常正则表达式
+     * @param throwPattern
+     * @return
+     */
+    private static String editThrowPattern(String throwPattern) {
+        if ("".equals(throwPattern)) {
+            return THROW_PATTERN;
+        }
+
+        // 按,号拆分异常
+        String[] split = throwPattern.split(",");
+
+        // TODO 做异常编辑
+
+        return "";
     }
 
     /**
@@ -189,32 +234,35 @@ final public class AspectExecutionEUtil {
         String params = namePattern.substring(namePattern.indexOf("(") + 1, namePattern.indexOf(")"));
         namePattern = namePattern.substring(0, namePattern.indexOf("("));
         if ("..".equals(params)) {
-            params = "\\\\((\\w|,|\\.| )+\\\\)";
+            params = "(\\\\w|,|\\\\.)*";
         } else {
             String[] args = params.split(",");
             params = "";
             for (String arg : args) {
+                // 下面两条代码才是用这此循环的目的，
+                // 开发人员习惯性的会在形参之间打个空格，所以这里要去除空格,
+                // 还有基本数据类型的封装类要与全限定名对应.
                 arg = arg.strip();
                 String value = basicDataTypeComparisonTable.get(arg);
+
                 if (value != null) {
                     arg = value;
                 } else {
+                    // 反正都循环了，就在这里顺便替换符号了
                     arg = arg.replace("*", "(\\\\w)*")
                             .replace("..", "(\\\\.(\\\\w)+)+\\\\.");
                 }
                 params += arg + ",";
             }
-            params = params.substring(0, params.length() - 1);
+            params = "\\\\(" + params.substring(0, params.length() - 1) + "\\\\)";
         }
 
+        // 替换符号
+        namePattern = namePattern.replace("*", "(\\\\w)*");
         // 判断是否是直接的方法名
-        if (methodRegex.matcher(namePattern).matches()) {
-            namePattern = namePattern.replace("*", "(\\\\w)*")
-                    .replace("(..)", "\\\\((\\\\w|,|\\\\.| )+\\\\)");
-        } else {
+        if (!methodRegex.matcher(namePattern).matches()) {
             // 有全限定类名
-            namePattern = namePattern.replace("*", "(\\\\w)*")
-                    .replace("..", "(\\\\.(\\\\w)+)+\\\\.");
+            namePattern = namePattern.replace("..", "(\\\\.(\\\\w)+)+\\\\.");
         }
 
         // 返回拼接的结果
