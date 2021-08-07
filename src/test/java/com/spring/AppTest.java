@@ -105,7 +105,8 @@ public class AppTest
 
     @Test
     public void strTest() {
-//        String s = "com(12, 32)";
+        String s = "com(12, 32)";
+        s = "*";
 //
 //        String substring = s.substring(s.indexOf("(") + 1, s.indexOf(")"));
 //        System.out.println(substring);
@@ -120,10 +121,13 @@ public class AppTest
 //            System.out.println(s2);
 //        }
 
-        String s = "1,2,3,4,5,";
-        // 目标：删除最后一个 ","
-        s = s.substring(0, s.length() - 1);
-        System.out.println(s);
+//        String s = "1,2,3,4,5,";
+//        // 目标：删除最后一个 ","
+//        s = s.substring(0, s.length() - 1);
+//        System.out.println(s);
+
+        System.out.println(s.indexOf("("));
+        System.out.println(s.endsWith(")"));
 
     }
 

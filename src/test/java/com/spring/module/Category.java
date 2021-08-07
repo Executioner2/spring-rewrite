@@ -53,7 +53,7 @@ public class Category {
      * @param createDate
      * @return
      */
-    private static String search(String name, int createDate) throws Exception{
+    private static String search(String name, int createDate) throws Exception, IllegalAccessError{
 
         return "";
     }
