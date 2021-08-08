@@ -28,7 +28,7 @@ public class MyAspect {
 
     }
 
-    @Around("execution(public * *(..))")
+    @Around("execution(public *com.*(..))")
     private static String pointcut02(String str, Date create) {
         return "";
     }
