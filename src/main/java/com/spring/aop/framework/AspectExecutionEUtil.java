@@ -193,7 +193,6 @@ final public class AspectExecutionEUtil {
         // 由于返回类型的匹配模式会匹配到其它部分，
         // 所以索性把匹配好了的其它部分从整个表达式扣除去，
         // 剩下的就是返回类型的execution表达式了。
-
         retTypePattern = executionE.replace(modifiersPattern, "")
                 .replace(namePattern, "")
                 .replace(throwPattern, "")
