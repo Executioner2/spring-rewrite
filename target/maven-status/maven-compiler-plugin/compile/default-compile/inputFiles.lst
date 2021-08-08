@@ -10,7 +10,6 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\config
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\BeanDefinitionRegistryPostProcessor.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\support\DefaultSingletonBeanRegistry.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\annotation\EnableAspectJAutoProxy.java
-E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\aa\A.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\InitializingBean.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\Product.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\service\ProductService.java
@@ -25,12 +24,10 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aop\framewo
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\handler\MyPostProcessor.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\config\BeanPostProcessor.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\config\ConfigurableListableBeanFactory.java
-E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\aa\bb\B.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\config\SingletonBeanRegistry.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\annotation\AspectJAutoProxyRegistrar.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\support\PostProcessorRegistrationDelegate.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\ConfigurableApplicationContext.java
-E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\module\aa\bb\dd\D.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\util\ReflectionUtils.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\support\GenericApplicationContext.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aop\framework\AopRegistry.java

@@ -23,19 +23,19 @@ final public class AspectExecutionEUtil {
      */
     private final static class ExecutionERegex {
         // execution表达式合法性检测的正则表达式
-        final private static String EXECUTION_E = "^(( *(public|private|default|protected|\\\\*) +)?( *(((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)|(\\\\*)) +((((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)|(\\\\*)|(\\\\*.\\\\*))\\\\(((\\\\.\\\\.)|( *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)+ *)?))\\\\)( +((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)+ *)?)?)$";
+        final private static String EXECUTION_E = "^(( *(public|private|default|protected|\\*) +)?( *(((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)) +((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)( +((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?)?)$";
 
         // 方法（字符串）正则表达式
-        final private static String STRING_REGEX = "^((\\\\*?\\\\w+\\\\*?)+)$";
+        final private static String STRING_REGEX = "^((\\*?\\w+\\*?)+)$";
 
         // 访问权限正则表达式
         final private static String ACCESS_RIGHT = "^( *(public|private|default|protected|\\\\*))?";
 
         // 方法定义正则表达式
-        final private static String NAME_PATTERN = "((((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)|(\\\\*)|(\\\\*.\\\\*))\\\\(((\\\\.\\\\.)|( *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)+ *)?))\\\\)";
+        final private static String NAME_PATTERN = "((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)";
 
         // 异常正则表达式
-        final private static String THROW_PATTERN = "( +((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)+ *)?)$";
+        final private static String THROW_PATTERN = "( +((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)? *)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?)$";
 
         // execution合法性检测的正则表达式对象
         final public static Pattern executionRegex = Pattern.compile(EXECUTION_E);
@@ -62,25 +62,25 @@ final public class AspectExecutionEUtil {
         private final static String MODIFIERS_PATTERN = "((public|private|default|protected) )?";
 
         // 其它修饰符：((\\w+ )*)?
-        private final static String OPTIONAL_MODIFIERS_PATTERN = "((\\\\w+ )*)?";
+        private final static String OPTIONAL_MODIFIERS_PATTERN = "((\\w+ )*)?";
 
         // 返回类型：(((\\w|\\.)+|\\*) )
-        private final static String RET_TYPE_PATTERN = "(((\\\\w|\\\\.)+|\\\\*) )";
+        private final static String RET_TYPE_PATTERN = "(((\\w|\\.)+|\\*) )";
 
         // 全限定类名.方法(形参)：(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)
-        private final static String NAME_PATTERN = "(\\\\w|\\\\*|\\\\.)+\\\\((\\\\w|,|\\\\.)*\\\\)";
+        private final static String NAME_PATTERN = "(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)";
 
         // 异常：( throws (\\w|\\.|,)+)?
-        private final static String THROW_PATTERN = "( throws (\\\\w|\\\\.|,)+)?";
+        private final static String THROW_PATTERN = "( throws (\\w|\\.|,)+)?";
 
         // 字符匹配（把*替换为正则表达式）
-        final private static String CHART_MATCHING = "(\\\\w)*";
+        final private static String CHART_MATCHING = "(\\w)*";
 
         // 包匹配（把..替换为正则表达式）
-        final private static String PACKAGE_MATCHING = "(\\\\.(\\\\w)+)+\\\\.";
+        final private static String PACKAGE_MATCHING = "(\\.(\\w)+)+\\.";
 
         // 任意形参匹配
-        final private static String ARBITRARILY_FORMAL = "(\\\\w|,|\\\\.)*";
+        final private static String ARBITRARILY_FORMAL = "(\\w|,|\\.)*";
     }
 
     /**
@@ -296,7 +296,7 @@ final public class AspectExecutionEUtil {
                 }
                 params += arg + ",";
             }
-            params = "\\\\(" + params.substring(0, params.length() - 1) + "\\\\)";
+            params = "\\(" + params.substring(0, params.length() - 1) + "\\)";
         }
 
         // 替换符号
