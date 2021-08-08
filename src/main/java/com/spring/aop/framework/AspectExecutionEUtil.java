@@ -14,41 +14,80 @@ import java.util.regex.Pattern;
  * @Description： 切面表达式工具类
  */
 final public class AspectExecutionEUtil {
-    // execution表达式合法性检测的正则表达式
-    final private static String EXECUTION_E = "^(((public|private|default|protected|\\\\*) )?(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+ )(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+\\\\(((\\\\.\\\\.)|(((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?))\\\\))( ((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?)?)$";
-
-    // 方法正则表达式
-    final private static String METHOD_E = "^((\\\\*?\\\\w+\\\\*?)+)$";
-
-    // 访问权限正则表达式
-    final private static String ACCESS_RIGHT = "^(public|private|default|protected|\\\\*)$";
-
-    // execution合法性检测的正则表达式对象
-    final public static Pattern executionRegex = Pattern.compile(EXECUTION_E);
-
-    // 方法正则表达式对象
-    final public static Pattern methodRegex = Pattern.compile(METHOD_E);
-
-    // 访问权限正则表达式对象
-    final public static Pattern accessRightRegex = Pattern.compile(ACCESS_RIGHT);
 
     // 数据类型对照表
     private final static Map<String, String> basicDataTypeComparisonTable = new HashMap<>();
 
-    // 访问权限类型：((public|private|default|protected) )?
-    private final static String MODIFIERS_PATTERN = "((public|private|default|protected) )?";
+    /**
+     * execution表达式合法性检测匿名内部类
+     */
+    private final static class ExecutionERegex {
+        // execution表达式合法性检测的正则表达式
+        final private static String EXECUTION_E = "^(((public|private|default|protected|\\\\*) )?(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+ )(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+\\\\(((\\\\.\\\\.)|(((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?))\\\\))( ((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?)?)$";
 
-    // 其它修饰符：((\\w+ )*)?
-    private final static String OPTIONAL_MODIFIERS_PATTERN = "((\\\\w+ )*)?";
+        // 方法（字符串）正则表达式
+        final private static String STRING_REGEX = "^((\\\\*?\\\\w+\\\\*?)+)$";
 
-    // 返回类型：(((\\w|\\.)+|\\*) )
-    private final static String RET_TYPE_PATTERN = "(((\\\\w|\\\\.)+|\\\\*) )";
+        // 访问权限正则表达式
+        final private static String ACCESS_RIGHT = "^( *(public|private|default|protected|\\\\*))?";
 
-    // 全限定类名.方法(形参)：(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)
-    private final static String NAME_PATTERN = "(\\\\w|\\\\*|\\\\.)+\\\\((\\\\w|,|\\\\.)*\\\\)";
+        // 方法定义正则表达式
+        final private static String NAME_PATTERN = "(((\\\\*\\\\.\\\\.|\\\\.)?\\\\w|\\\\*?(\\\\.\\\\.\\\\*)?)+\\\\(((\\\\.\\\\.)|(((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?))\\\\))";
 
-    // 异常：( throws (\\w|\\.|,)+)?
-    private final static String THROW_PATTERN = "( throws (\\\\w|\\\\.|,)+)?";
+        // 异常正则表达式
+        final private static String THROW_PATTERN = "( ((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?) *$";
+
+        // 返回值正则表达式
+        final private static String RET_TYPE_PATTERN = "";
+
+        // execution合法性检测的正则表达式对象
+        final public static Pattern executionRegex = Pattern.compile(EXECUTION_E);
+
+        // 方法正则表达式对象
+        final public static Pattern methodRegex = Pattern.compile(STRING_REGEX);
+
+        // 访问权限正则表达式对象
+        final public static Pattern accessRightRegex = Pattern.compile(ACCESS_RIGHT);
+
+        // 返回值正则表达式对象
+        final public static Pattern retTypeRegex = Pattern.compile(RET_TYPE_PATTERN);
+
+        // 方法定义正则表达式对象
+        final public static Pattern nameRegex = Pattern.compile(NAME_PATTERN);
+
+        // 异常正则表达式对象
+        final public static Pattern throwRegex = Pattern.compile(THROW_PATTERN);
+
+    }
+
+    /**
+     * execution特殊符号转正则表达式匿名内部类
+     */
+    private final static class ETransitionRegex {
+        // 访问权限类型：((public|private|default|protected) )?
+        private final static String MODIFIERS_PATTERN = "((public|private|default|protected) )?";
+
+        // 其它修饰符：((\\w+ )*)?
+        private final static String OPTIONAL_MODIFIERS_PATTERN = "((\\\\w+ )*)?";
+
+        // 返回类型：(((\\w|\\.)+|\\*) )
+        private final static String RET_TYPE_PATTERN = "(((\\\\w|\\\\.)+|\\\\*) )";
+
+        // 全限定类名.方法(形参)：(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)
+        private final static String NAME_PATTERN = "(\\\\w|\\\\*|\\\\.)+\\\\((\\\\w|,|\\\\.)*\\\\)";
+
+        // 异常：( throws (\\w|\\.|,)+)?
+        private final static String THROW_PATTERN = "( throws (\\\\w|\\\\.|,)+)?";
+
+        // 字符匹配（把*替换为正则表达式）
+        final private static String CHART_MATCHING = "(\\\\w)*";
+
+        // 包匹配（把..替换为正则表达式）
+        final private static String PACKAGE_MATCHING = "(\\\\.(\\\\w)+)+\\\\.";
+
+        // 任意形参匹配
+        final private static String ARBITRARILY_FORMAL = "(\\\\w|,|\\\\.)*";
+    }
 
     /**
      * 初始化数据类型对照表
@@ -72,10 +111,9 @@ final public class AspectExecutionEUtil {
      * @return
      */
     public static boolean isLegalExecution(String execution) {
-        Matcher matcher = executionRegex.matcher(execution);
+        Matcher matcher = ExecutionERegex.executionRegex.matcher(execution);
         return matcher.matches();
     }
-
 
     /**
      * 取得executionE的正则表达式对象。
@@ -109,60 +147,86 @@ final public class AspectExecutionEUtil {
     public static Pattern getExecutionERegex(String executionE) {
         String modifiersPattern = ""; // 访问权限
         String retTypePattern = ""; // 返回值类型
-        String namePattern = ""; // 全限定类名.方法名(形参)
+        String namePattern = ""; // 方法声明
         String throwPattern = ""; // 异常
 
-        // 通过空格拆分判断哪些要匹配
-        String[] strings = executionE.split(" ");
-        if (strings.length == 2) {
-            retTypePattern = strings[0];
-            namePattern = strings[1];
+        // 不能单纯的用根据空格对execution表达式进行拆分
+        // 例如：public void com.study.User.edit(java.lang.String, int) java.lang.Exception  ,  java.lang.IllegalAccessError
+        // 多个形参之间、多个异常之间和不同部分允许开发人员敲多个空格，
+        // 这样就需要增强空格拆分或分开进行正则匹配。
+        Matcher accessRightMatcher = ExecutionERegex.accessRightRegex.matcher(executionE);
+        Matcher nameMatcher = ExecutionERegex.nameRegex.matcher(executionE);
+        Matcher throwMatcher = ExecutionERegex.throwRegex.matcher(executionE);
 
-        } else if (strings.length == 3) {
-            // 替换访问权限类型
-            // * * com.study.User.setName(java.lang.String)
-            // 明明可以省略访问权限类型的却非要用个*号，上面这种还好，恰好第一个就是想要的访问权限类型
-            // 但是如果是这种奇怪的写法：* com.study.User.setName(java.lang.String) java.lang.IllegalStateException
-            // 第一个不是预期的访问权限类型，而是代表返回类型的*就很淦了，那么还需要判断拆分三个字符串，第二个是否包含()，
-            // 如果包含就是奇怪写法，如果不包含就是预期写法。
-            // 包含访问权限类型
-            if (accessRightRegex.matcher(strings[0]).matches()
-                    && isNamePattern(strings[1])) {
-
-                modifiersPattern = strings[0];
-                retTypePattern = strings[1];
-                namePattern = strings[2];
-
-            } else {
-                // 不包含访问权限类型，那么就包含抛出什么类型的异常
-                retTypePattern = strings[0];
-                namePattern = strings[1];
-                throwPattern = strings[2];
-
+        // 匹配访问权限
+        if (accessRightMatcher.matches()) {
+            if (accessRightMatcher.groupCount() != 1) {
+                throw new IllegalStateException("访问权限匹配失败！" + accessRightMatcher);
             }
 
-        } else if (strings.length == 4){
-            // 所有参数都写了
-            modifiersPattern = strings[0];
-            retTypePattern = strings[1];
-            namePattern = strings[2];
-            throwPattern = strings[3];
+            // 有访问权限，取出访问权限
+            modifiersPattern = accessRightMatcher.group(0).strip();
+        }
 
+        // 匹配方法定义
+        if (nameMatcher.matches()) {
+            if (nameMatcher.groupCount() != 1) {
+                throw new IllegalStateException("方法定义匹配失败！" + nameMatcher);
+            }
+
+            // 方法定义匹配上了
+            namePattern = nameMatcher.group(0).strip();
         } else {
             throw new IllegalStateException("execution表达式有误！" + executionE);
         }
 
+        // 匹配异常
+        if (throwMatcher.matches()) {
+            if (throwMatcher.groupCount() != 1) {
+                throw new IllegalStateException("异常匹配失败！" + throwMatcher);
+            }
+
+            // 异常匹配上了
+            throwPattern = throwMatcher.group(0).strip();
+        }
+
+        // 由于返回类型的匹配模式会匹配到其它部分，
+        // 所以索性把匹配好了的其它部分从整个表达式扣除去，
+        // 剩下的就是返回类型的execution表达式了。
+
+        retTypePattern = executionE.replace(modifiersPattern, "")
+                .replace(namePattern, "")
+                .replace(throwPattern, "")
+                .strip();
+
+        if ("".equals(retTypePattern)) {
+            throw new IllegalStateException("返回类型匹配失败！");
+        }
 
         modifiersPattern = editModifiersPattern(modifiersPattern); // 编辑访问权限正则表达式
         retTypePattern = editRetTypePattern(retTypePattern); // 编辑返回类型的正则表达式
-        namePattern = editNamePattern(namePattern); // 编辑全限定类名.方法(形参)的正则表达式
+        namePattern = editNamePattern(namePattern); // 编辑方法声明的正则表达式
         throwPattern = editThrowPattern(throwPattern); // 编辑异常的正则表达式
 
-        executionE = "^(" + modifiersPattern + OPTIONAL_MODIFIERS_PATTERN + retTypePattern + namePattern + throwPattern + ")&";
+        executionE = "^(" + modifiersPattern + ETransitionRegex.OPTIONAL_MODIFIERS_PATTERN + retTypePattern + namePattern + throwPattern + ")&";
 
         System.out.println(executionE);
 
         return Pattern.compile(executionE);
+    }
+
+    /**
+     * 拆分execution表达式
+     * 不能单纯的用根据空格对execution表达式进行拆分
+     * 例如：public void com.study.User.edit(java.lang.String, int) java.lang.Exception  ,  java.lang.IllegalAccessError
+     * 多个形参之间和多个异常之间允许开发人员敲多个空格，
+     * 这样就需要增强空格拆分。
+     * 此方法就是为了实现这一需求。
+     * @param executionE
+     * @return
+     */
+    private static String[] splitExecutionE(String executionE) {
+        return null;
     }
 
     /**
@@ -189,15 +253,24 @@ final public class AspectExecutionEUtil {
      */
     private static String editThrowPattern(String throwPattern) {
         if ("".equals(throwPattern)) {
-            return THROW_PATTERN;
+            return ETransitionRegex.THROW_PATTERN;
         }
 
         // 按,号拆分异常
         String[] split = throwPattern.split(",");
+        throwPattern = "";
+        for (String tr : split) {
+            tr = tr.strip();
+            // 替换符号
+            tr = tr.replace("*", ETransitionRegex.CHART_MATCHING)
+                    .replace("..", ETransitionRegex.PACKAGE_MATCHING);
 
-        // TODO 做异常编辑
+            throwPattern += tr + ",";
+        }
 
-        return "";
+        throwPattern = "( throws" + throwPattern.substring(0, throwPattern.length() - 1) + ")?";
+
+        return throwPattern;
     }
 
     /**
@@ -210,7 +283,7 @@ final public class AspectExecutionEUtil {
             return "(" + modifiersPattern + " )"; // 注意反括号前应该有空格
         }
 
-        return MODIFIERS_PATTERN;
+        return ETransitionRegex.MODIFIERS_PATTERN;
     }
 
     /**
@@ -219,13 +292,20 @@ final public class AspectExecutionEUtil {
      * @return
      */
     private static String editRetTypePattern(String retTypePattern) {
-
-        return retTypePattern.replace("..", "(\\\\w|\\\\.)+")
-                .replace("*", "(\\\\w|\\\\.)*");
+        // 尝试从基本数据类型包装类集合中取得全限定类名
+        String retType = basicDataTypeComparisonTable.get(retTypePattern);
+        if (retType != null) {
+            return retType;
+        }
+        return retTypePattern.replace("..", ETransitionRegex.PACKAGE_MATCHING)
+                .replace("*", ETransitionRegex.CHART_MATCHING);
     }
 
     /**
-     * 编辑全限定类名.方法(形参)
+     * 编辑方法声明
+     * 因为通过反射得到的方法名一定是符合格式的，
+     * 所以在做匹配的时候就不用过于严谨，
+     * 否则正则表达式会变得十分冗余
      * @param namePattern
      * @return
      */
@@ -234,7 +314,7 @@ final public class AspectExecutionEUtil {
         String params = namePattern.substring(namePattern.indexOf("(") + 1, namePattern.indexOf(")"));
         namePattern = namePattern.substring(0, namePattern.indexOf("("));
         if ("..".equals(params)) {
-            params = "(\\\\w|,|\\\\.)*";
+            params = ETransitionRegex.ARBITRARILY_FORMAL;
         } else {
             String[] args = params.split(",");
             params = "";
@@ -249,8 +329,8 @@ final public class AspectExecutionEUtil {
                     arg = value;
                 } else {
                     // 反正都循环了，就在这里顺便替换符号了
-                    arg = arg.replace("*", "(\\\\w)*")
-                            .replace("..", "(\\\\.(\\\\w)+)+\\\\.");
+                    arg = arg.replace("*", ETransitionRegex.CHART_MATCHING)
+                            .replace("..", ETransitionRegex.PACKAGE_MATCHING);
                 }
                 params += arg + ",";
             }
@@ -258,11 +338,11 @@ final public class AspectExecutionEUtil {
         }
 
         // 替换符号
-        namePattern = namePattern.replace("*", "(\\\\w)*");
+        namePattern = namePattern.replace("*", ETransitionRegex.CHART_MATCHING);
         // 判断是否是直接的方法名
-        if (!methodRegex.matcher(namePattern).matches()) {
+        if (!ExecutionERegex.methodRegex.matcher(namePattern).matches()) {
             // 有全限定类名
-            namePattern = namePattern.replace("..", "(\\\\.(\\\\w)+)+\\\\.");
+            namePattern = namePattern.replace("..", ETransitionRegex.PACKAGE_MATCHING);
         }
 
         // 返回拼接的结果
