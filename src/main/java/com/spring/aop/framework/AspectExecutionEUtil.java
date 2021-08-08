@@ -215,20 +215,6 @@ final public class AspectExecutionEUtil {
     }
 
     /**
-     * 拆分execution表达式
-     * 不能单纯的用根据空格对execution表达式进行拆分
-     * 例如：public void com.study.User.edit(java.lang.String, int) java.lang.Exception  ,  java.lang.IllegalAccessError
-     * 多个形参之间和多个异常之间允许开发人员敲多个空格，
-     * 这样就需要增强空格拆分。
-     * 此方法就是为了实现这一需求。
-     * @param executionE
-     * @return
-     */
-    private static String[] splitExecutionE(String executionE) {
-        return null;
-    }
-
-    /**
      * 是否是方法
      * @param val
      * @return
