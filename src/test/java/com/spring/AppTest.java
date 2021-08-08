@@ -79,6 +79,14 @@ public class AppTest
     }
 
     @Test
+    public void regesTest() {
+//        Pattern compile = Pattern.compile("((((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)|(\\\\*)|(\\\\*.\\\\*))\\\\(((\\\\.\\\\.)|( *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.)?(\\\\.\\\\w|\\\\w|\\\\w\\\\*|\\\\.\\\\*)(\\\\.\\\\.\\\\*)?)+)+ *)?))\\\\)");
+        Pattern compile = Pattern.compile("((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)");
+        Matcher matcher = compile.matcher("public * com.*(..)");
+        System.out.println(matcher.find());
+    }
+
+    @Test
     public void test04() {
         System.out.println(Category.class);
         System.out.println(InterfaceA.class.isInterface());

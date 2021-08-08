@@ -162,8 +162,8 @@ final public class AspectExecutionEUtil {
             modifiersPattern = accessRightMatcher.group(0).strip();
         }
 
-        // 匹配方法定义
-        if (nameMatcher.matches()) {
+        // 匹配方法定义，不是完全匹配所以用find()
+        if (nameMatcher.find()) {
             if (nameMatcher.groupCount() != 1) {
                 throw new IllegalStateException("方法定义匹配失败！" + nameMatcher);
             }
