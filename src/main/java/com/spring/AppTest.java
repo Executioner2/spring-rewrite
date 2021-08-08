@@ -4,8 +4,6 @@ import com.spring.context.ApplicationContext;
 import com.spring.context.annotation.AnnotationConfigApplicationContext;
 import com.spring.test.config.BeanScan;
 import com.spring.test.config.BeanScan2;
-import com.spring.test.module.aa.A;
-import com.spring.test.module.aa.bb.B;
 
 /**
  * Hello world!
