@@ -37,9 +37,6 @@ final public class AspectExecutionEUtil {
         // 异常正则表达式
         final private static String THROW_PATTERN = "( ((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+(( *, *((\\\\*\\\\.\\\\.|\\\\.|)?\\\\*?\\\\w(\\\\.|\\\\*)?(\\\\.\\\\.\\\\*)?)+)+)?) *$";
 
-        // 返回值正则表达式
-        final private static String RET_TYPE_PATTERN = "";
-
         // execution合法性检测的正则表达式对象
         final public static Pattern executionRegex = Pattern.compile(EXECUTION_E);
 
@@ -48,9 +45,6 @@ final public class AspectExecutionEUtil {
 
         // 访问权限正则表达式对象
         final public static Pattern accessRightRegex = Pattern.compile(ACCESS_RIGHT);
-
-        // 返回值正则表达式对象
-        final public static Pattern retTypeRegex = Pattern.compile(RET_TYPE_PATTERN);
 
         // 方法定义正则表达式对象
         final public static Pattern nameRegex = Pattern.compile(NAME_PATTERN);
@@ -212,23 +206,6 @@ final public class AspectExecutionEUtil {
         System.out.println(executionE);
 
         return Pattern.compile(executionE);
-    }
-
-    /**
-     * 是否是方法
-     * @param val
-     * @return
-     */
-    private static boolean isNamePattern(String val) {
-        if (val == null || "".equals(val)) {
-            return false;
-        }
-
-        if (val.indexOf("(") != -1 && val.endsWith(")")) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
