@@ -187,7 +187,7 @@ public class AppTest
         Method[] declaredMethods = category.getClass().getDeclaredMethods();
         for (Method method : declaredMethods) {
             System.out.println(method.getName());
-            System.out.println(method);
+            System.out.println(method.toString());
             System.out.println();
         }
     }

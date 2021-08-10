@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @Program: spring-rewrite
@@ -33,12 +33,10 @@ public abstract class AbstractAopRegistry implements AopRegistry{
      * 扫描连接点
      * @param factory
      * @param executionE
+     * @param pointcutDefinition
      */
     @Override
-    public void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE) {
-        // 取得executionE的正则表达式
-        Pattern pattern = AspectExecutionEUtil.getExecutionERegex(executionE);
-    }
+    public abstract void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE, PointcutDefinition pointcutDefinition, ThreadPoolExecutor threadPool);
 
     /**
      * 取得joinPointDefinitionMap的迭代器

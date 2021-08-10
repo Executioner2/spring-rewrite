@@ -45,4 +45,10 @@ public interface BeanDefinition {
 
     // 是否是懒加载
     boolean isLazyInit();
+
+    // 设置代理
+    void setProxy(boolean proxy);
+
+    // 是否是需要代理的对象
+    boolean isProxy();
 }

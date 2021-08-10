@@ -8,6 +8,7 @@ com\spring\test\config\BeanScan.class
 com\spring\beans\factory\BeanFactory.class
 com\spring\beans\factory\annotation\Autowired.class
 com\spring\util\ReflectionUtils.class
+com\spring\aop\framework\support\AopDefinitionRegistry$1.class
 com\spring\aspectj\lang\annotation\Aspect.class
 com\spring\beans\factory\config\ConfigurableListableBeanFactory.class
 com\spring\aspectj\lang\support\PointcutDefinition.class

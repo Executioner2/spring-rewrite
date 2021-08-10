@@ -5,6 +5,7 @@ import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @Program: spring-rewrite
@@ -40,6 +41,6 @@ public interface AopRegistry {
     void registerJoinPointDefinitionMap(String className, List<String> joinPoints);
 
     // 扫描连接点
-    void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE);
+    void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE, PointcutDefinition pointcutDefinition, ThreadPoolExecutor threadPool);
 
 }

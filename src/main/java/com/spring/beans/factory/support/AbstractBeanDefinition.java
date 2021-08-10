@@ -27,6 +27,9 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     // bean定义，与spring源码有些区别，spring源码使用的是更上层的Resource接口
     private BeanDefinitionRegistry resource;
 
+    // 是否需要代理
+    private volatile Boolean proxy;
+
     protected AbstractBeanDefinition() {
     }
 
@@ -38,6 +41,7 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
         setBeanClass(original.getBeanClass());
         setScope(original.getScope());
         setLazyInit(original.isLazyInit());
+        setProxy(original.isProxy());
 
         if (original instanceof AbstractBeanDefinition) {
             // TODO 待补充
@@ -140,5 +144,23 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
     @Override
     public String getBeanClassName() {
         return this.getBeanClass().toString();
+    }
+
+    /**
+     * 设置代理
+     * @param proxy
+     */
+    @Override
+    public void setProxy(boolean proxy) {
+        this.proxy = proxy;
+    }
+
+    /**
+     * 是否需要代理
+     * @return
+     */
+    @Override
+    public boolean isProxy() {
+        return this.proxy;
     }
 }

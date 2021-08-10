@@ -15,6 +15,9 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Program: spring-rewrite
@@ -48,6 +51,9 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
         // AOP注册bean
         AopDefinitionRegistry aopRegistry = (AopDefinitionRegistry) factory.getBean(AopDefinitionRegistry.class);
 
+        // 开启一个线程池，用来扫描连接点
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10,15,60, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>());
+
         Iterator<String> iterator = factory.getBeanNamesIterator();
 
         // 进行AOP扫描
@@ -71,7 +77,8 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
                     }
 
                     Around around = method.getDeclaredAnnotation(Around.class);
-                    pointcutDefinitions.add(new PointcutDefinition(around.value(), method, beanClass));
+                    PointcutDefinition pointcutDefinition = new PointcutDefinition(around.value(), method, beanClass);
+                    pointcutDefinitions.add(pointcutDefinition);
                     String executionE = around.value();
 
                     if (executionE == null) {
@@ -89,7 +96,7 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
                         }
 
                         // 进行连接点扫描
-                        aopRegistry.scanJoinPoint(factory, executionE);
+                        aopRegistry.scanJoinPoint(factory, executionE, pointcutDefinition, threadPool);
 
 
                     } else {
