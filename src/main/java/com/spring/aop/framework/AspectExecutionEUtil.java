@@ -23,13 +23,13 @@ final public class AspectExecutionEUtil {
      */
     private final static class ExecutionERegex {
         // execution表达式合法性检测的正则表达式
-        final private static String EXECUTION_E = "^(( *(public|private|default|protected|\\*) +)?( *(((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)) +((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)( +((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?)?)$";
+        final private static String EXECUTION_E = "^(( *(public|private|default|protected) +)?( *(((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)) +((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)( +((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?)?)$";
 
-        // 方法（字符串）正则表达式
-        final private static String STRING_REGEX = "^((\\*?\\w+\\*?)+)$";
+        // 方法（字符串）正则表达式，*转(\w)*一定在.转和..转之前，所以在*转后判断是否为方法名就需要把\*替换为\(\\w\)\*
+        final private static String STRING_REGEX = "^(((\\(\\\\w\\)\\*)?\\w+(\\(\\\\w\\)\\*)?)+)$";
 
         // 访问权限正则表达式
-        final private static String ACCESS_RIGHT = "^( *(public|private|default|protected|\\\\*))?";
+        final private static String ACCESS_RIGHT = "^( *(public|private|default|protected))";
 
         // 方法定义正则表达式
         final private static String NAME_PATTERN = "((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)";
@@ -65,10 +65,10 @@ final public class AspectExecutionEUtil {
         private final static String OPTIONAL_MODIFIERS_PATTERN = "((\\w+ )*)?";
 
         // 返回类型：(((\\w|\\.)+|\\*) )
-        private final static String RET_TYPE_PATTERN = "(((\\w|\\.)+|\\*) )";
+        private final static String RET_TYPE_PATTERN = "(((\\w|\\.)+) )";
 
-        // 全限定类名.方法(形参)：(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)
-        private final static String NAME_PATTERN = "(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)";
+        // 全限定类名.方法（这里没有形参）：(\\w|\\*|\\.)+\\((\\w|,|\\.)*\\)
+        private final static String NAME_PATTERN = "(\\w|\\*|\\.)+";
 
         // 异常：( throws (\\w|\\.|,)+)?
         private final static String THROW_PATTERN = "( throws (\\w|\\.|,)+)?";
@@ -77,10 +77,13 @@ final public class AspectExecutionEUtil {
         final private static String CHART_MATCHING = "(\\w)*";
 
         // 包匹配（把..替换为正则表达式）
-        final private static String PACKAGE_MATCHING = "(\\.(\\w)+)+\\.";
+        final private static String PACKAGE_MATCHING = "(\\.(\\w)+)+";
 
         // 任意形参匹配
         final private static String ARBITRARILY_FORMAL = "(\\w|,|\\.)*";
+
+        // 包名的.需要转义
+        final private static String PACKAGE_POINT = "\\.";
     }
 
     /**
@@ -122,16 +125,23 @@ final public class AspectExecutionEUtil {
      * 5、异常：throws java.lang.Exception
      * 最终拼凑的正则表达式必须包含这五部分，其中1、2、5为可选的，正则表达是应该给这三项的次数限定为零次或一次。
      * 方法匹配正则表达式：
-     * ^(((public|private|default|protected) )?((\w+ )*)?(((\w|\.)+|\*) ){1}(\w|\*|\.)+\((\w|,|\.)*\)( throws (\w|\.|,)+)?)$
+     * ^(((public|private|default|protected) )?((\w+ )*)?(((\w|\.)+|\*) )(\w|\*|\.)+\((\w|,|\.)*\)( throws (\w|\.|,)+)?)$
      *
      * 检测execution表达式合法性：
-     * ^(((public|private|default|protected|\\*) )?((\\w+ )*|\\* )?(((\\w|\\.)+|\\*) )(\\w|\\*|\\.)+\\((\\w|,|\\.| )+\\)( (\\w|\\.|\\*)+)?)$
+     * @see ExecutionERegex#EXECUTION_E
      *
      * execution表达式为四部分（这里融合全限定类名和方法）
-     * 1、访问权限类型（可选）+其它修饰符（隐性的默认全匹配）           ((public|private|default|protected|\\*) )?((\\w+ )*|\\* )?
-     * 2、返回值类型（必选）              (((\\w|\\.)+|\\*) )
-     * 3、全限定类名（可选）+ 方法（必选）  (\\w|\\*|\\.)+\\((\\w|,|\\.| )+\\)
-     * 4、异常类型（可选）               ( (\\w|\\.|\\*)+)?
+     * 1、访问权限类型（可选）+其它修饰符（隐性的默认全匹配）
+     * 2、返回值类型（必选）
+     * 3、全限定类名（可选）+ 方法（必选）
+     * 4、异常类型（可选）
+     *
+     * execution部分符号转正则表达式
+     * 左边为execution表达式，右边为正则表达式
+     * *转：* 等价于 (\w)*
+     * .转：. 等价于 \.
+     * ..转：.. 等价于 (\.(\w)+)+
+     * 转换顺序一定严格按照* . ..的顺序 且在进行..转时 ..需要替换为\.\.
      *
      * 由于全限定类名和方法是粘连在一起的，所以最多可以拆分成四个部分，
      * 开发人员不写其它修饰符的匹配，隐性默认全匹配。
@@ -152,36 +162,36 @@ final public class AspectExecutionEUtil {
         Matcher nameMatcher = ExecutionERegex.nameRegex.matcher(executionE);
         Matcher throwMatcher = ExecutionERegex.throwRegex.matcher(executionE);
 
-        // 匹配访问权限
-        if (accessRightMatcher.matches()) {
-            if (accessRightMatcher.groupCount() != 1) {
-                throw new IllegalStateException("访问权限匹配失败！" + accessRightMatcher);
-            }
-
+        // 匹配访问权限，不是完全匹配所以用find()
+        if (accessRightMatcher.find()) {
             // 有访问权限，取出访问权限
             modifiersPattern = accessRightMatcher.group(0).strip();
+
+            if (modifiersPattern == null || "".equals(modifiersPattern)) {
+                throw new IllegalStateException("访问权限匹配失败！" + modifiersPattern);
+            }
         }
 
         // 匹配方法定义，不是完全匹配所以用find()
         if (nameMatcher.find()) {
-            if (nameMatcher.groupCount() != 1) {
-                throw new IllegalStateException("方法定义匹配失败！" + nameMatcher);
-            }
-
             // 方法定义匹配上了
             namePattern = nameMatcher.group(0).strip();
+
+            if (namePattern == null || "".equals(namePattern)) {
+                throw new IllegalStateException("方法定义匹配失败！" + namePattern);
+            }
         } else {
             throw new IllegalStateException("execution表达式有误！" + executionE);
         }
 
-        // 匹配异常
-        if (throwMatcher.matches()) {
-            if (throwMatcher.groupCount() != 1) {
-                throw new IllegalStateException("异常匹配失败！" + throwMatcher);
-            }
-
+        // 匹配异常，不是完全匹配所以用find()
+        if (throwMatcher.find()) {
             // 异常匹配上了
             throwPattern = throwMatcher.group(0).strip();
+
+            if (throwPattern == null || "".equals(throwPattern)) {
+                throw new IllegalStateException("异常匹配失败！" + throwPattern);
+            }
         }
 
         // 由于返回类型的匹配模式会匹配到其它部分，
@@ -201,7 +211,7 @@ final public class AspectExecutionEUtil {
         namePattern = editNamePattern(namePattern); // 编辑方法声明的正则表达式
         throwPattern = editThrowPattern(throwPattern); // 编辑异常的正则表达式
 
-        executionE = "^(" + modifiersPattern + ETransitionRegex.OPTIONAL_MODIFIERS_PATTERN + retTypePattern + namePattern + throwPattern + ")&";
+        executionE = "^(" + modifiersPattern + ETransitionRegex.OPTIONAL_MODIFIERS_PATTERN + retTypePattern + namePattern + throwPattern + ")$";
 
         System.out.println(executionE);
 
@@ -225,7 +235,9 @@ final public class AspectExecutionEUtil {
             tr = tr.strip();
             // 替换符号
             tr = tr.replace("*", ETransitionRegex.CHART_MATCHING)
-                    .replace("..", ETransitionRegex.PACKAGE_MATCHING);
+                    .replace(".", ETransitionRegex.PACKAGE_POINT) // 替换包名之间的.
+                    // 如果是..（子包）已经替换为了\.\.，所以两个连着的\.\.表示子包匹配
+                    .replace("\\.\\.", ETransitionRegex.PACKAGE_MATCHING);
 
             throwPattern += tr + ",";
         }
@@ -241,7 +253,7 @@ final public class AspectExecutionEUtil {
      * @return
      */
     private static String editModifiersPattern(String modifiersPattern) {
-        if (!("*".equals(modifiersPattern))) {
+        if (!("*".equals(modifiersPattern) || "".equals(modifiersPattern))) {
             return "(" + modifiersPattern + " )"; // 注意反括号前应该有空格
         }
 
@@ -257,10 +269,17 @@ final public class AspectExecutionEUtil {
         // 尝试从基本数据类型包装类集合中取得全限定类名
         String retType = basicDataTypeComparisonTable.get(retTypePattern);
         if (retType != null) {
-            return retType;
+            retTypePattern = retType;
+        } else if ("*".equals(retTypePattern)) {
+            return ETransitionRegex.RET_TYPE_PATTERN;
+        } else {
+            retTypePattern = retTypePattern.replace("*", ETransitionRegex.CHART_MATCHING)
+                    .replace(".", ETransitionRegex.PACKAGE_POINT) // 替换包名之间的.
+                    // 如果是..（子包）已经替换为了\.\.，所以两个连着的\.\.表示子包匹配
+                    .replace("\\.\\.", ETransitionRegex.PACKAGE_MATCHING);
+
         }
-        return retTypePattern.replace("..", ETransitionRegex.PACKAGE_MATCHING)
-                .replace("*", ETransitionRegex.CHART_MATCHING);
+        return retTypePattern + " ";
     }
 
     /**
@@ -292,22 +311,35 @@ final public class AspectExecutionEUtil {
                 } else {
                     // 反正都循环了，就在这里顺便替换符号了
                     arg = arg.replace("*", ETransitionRegex.CHART_MATCHING)
-                            .replace("..", ETransitionRegex.PACKAGE_MATCHING);
+                            .replace(".", ETransitionRegex.PACKAGE_POINT) // 替换包名之间的.
+                            // 如果是..（子包）已经替换为了\.\.，所以两个连着的\.\.表示子包匹配
+                            .replace("\\.\\.", ETransitionRegex.PACKAGE_MATCHING);
                 }
                 params += arg + ",";
             }
             params = "\\(" + params.substring(0, params.length() - 1) + "\\)";
         }
 
-        // 替换符号
-        namePattern = namePattern.replace("*", ETransitionRegex.CHART_MATCHING);
-        // 判断是否是直接的方法名
-        if (!ExecutionERegex.methodRegex.matcher(namePattern).matches()) {
-            // 有全限定类名
-            namePattern = namePattern.replace("..", ETransitionRegex.PACKAGE_MATCHING);
+        if ("*".equals(namePattern)) {
+            namePattern = ETransitionRegex.NAME_PATTERN;
+        } else {
+            // 替换符号
+            namePattern = namePattern.replace("*", ETransitionRegex.CHART_MATCHING);
+            // 判断是否是直接的方法名
+            if (ExecutionERegex.methodRegex.matcher(namePattern).matches()) {
+                // 省略了全限定类名，namePattern前如果没有*号则不能模糊匹配其它字符，
+                // 可ETransitionRegex.NAME_PATTERN却是通用的，没有进行严格判断，
+                // 所以需要在二者之间加一个ETransitionRegex.PACKAGE_POINT
+                namePattern = ETransitionRegex.NAME_PATTERN + ETransitionRegex.PACKAGE_POINT + namePattern;
+            } else {
+                // 有全限定类名
+                namePattern = namePattern
+                        .replace(".", ETransitionRegex.PACKAGE_POINT)
+                        .replace("\\.\\.", ETransitionRegex.PACKAGE_MATCHING);
+            }
         }
 
         // 返回拼接的结果
-        return namePattern + params;
+        return namePattern + "\\(" + params + "\\)";
     }
 }

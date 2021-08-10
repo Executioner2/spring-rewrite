@@ -23,7 +23,7 @@ public class MyAspect {
 
     }
 
-    @Around("execution(* set*(..)")
+    @Around("execution(* set*(..))")
     public void pointcut02() {
 
     }
