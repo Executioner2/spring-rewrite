@@ -9,4 +9,7 @@ package com.spring.aspectj.lang;
  * @Description：
  */
 public interface JoinPoint {
+    // 获取参数
+    Object[] getArgs();
+
 }
