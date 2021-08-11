@@ -1,8 +1,10 @@
 package com.spring.beans.factory.support;
 
+import com.spring.aop.framework.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import com.spring.beans.factory.InitializingBean;
 import com.spring.beans.factory.annotation.Autowired;
 import com.spring.beans.factory.config.BeanPostProcessor;
+import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import com.spring.util.ReflectionUtils;
 
 import java.lang.reflect.*;
@@ -188,9 +190,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
         Object exposedObject = bean;
 
-        // 判断是否开启了动态代理
+        // 判断是否开启了动态代理，和官方有出入
         if (mbd.isProxy()) {
-
+            SmartInstantiationAwareBeanPostProcessor autoProxyCreator = (AnnotationAwareAspectJAutoProxyCreator) getBean(AnnotationAwareAspectJAutoProxyCreator.class);
+            exposedObject = autoProxyCreator.getEarlyBeanReference(bean, beanName, this);
         }
 
         return exposedObject;

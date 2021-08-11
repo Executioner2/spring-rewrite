@@ -1,5 +1,6 @@
 package com.spring.context.annotation;
 
+import com.spring.aop.framework.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import com.spring.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
@@ -34,6 +35,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
      */
     private void register(Class[] componentClasses) {
         BeanDefinitionRegistry beanFactory = (BeanDefinitionRegistry) getBeanFactory();
+
         for (Class componentClass : componentClasses) {
             if (componentClass.isAnnotationPresent(ComponentScan.class)) {
                 // 如果是包扫描则先把该方法注册到bean中
@@ -50,4 +52,5 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
             }
         }
     }
+
 }

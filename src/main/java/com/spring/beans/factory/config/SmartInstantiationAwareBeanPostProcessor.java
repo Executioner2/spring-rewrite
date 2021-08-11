@@ -1,5 +1,7 @@
 package com.spring.beans.factory.config;
 
+import com.spring.beans.factory.BeanFactory;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -14,9 +16,10 @@ public interface SmartInstantiationAwareBeanPostProcessor extends BeanPostProces
      * 提前创建动态代理对象
      * @param bean
      * @param beanName
+     * @param beanFactory
      * @return
      */
-    default Object getEarlyBeanReference(Object bean, String beanName) {
+    default Object getEarlyBeanReference(Object bean, String beanName, BeanFactory beanFactory) {
         return bean;
     }
 }

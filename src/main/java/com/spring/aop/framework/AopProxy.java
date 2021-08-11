@@ -1,5 +1,7 @@
 package com.spring.aop.framework;
 
+import com.spring.beans.factory.BeanFactory;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -15,4 +17,7 @@ public interface AopProxy {
 
     // 创建获取代理对象
     Object getProxy(ClassLoader classLoader);
+
+    // 创建获取代理对象
+    Object getProxy(Class clazz, BeanFactory beanFactory);
 }

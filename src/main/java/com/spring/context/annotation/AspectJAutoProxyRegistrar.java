@@ -1,5 +1,6 @@
 package com.spring.context.annotation;
 
+import com.spring.aop.framework.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import com.spring.aop.framework.support.AopDefinitionRegistry;
 import com.spring.aspectj.lang.annotation.Around;
 import com.spring.aspectj.lang.annotation.Aspect;
@@ -43,11 +44,13 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
 
         ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) registry;
 
-        // 注册aop工厂到单例池中
-        AnnotatedGenericBeanDefinition definition = new AnnotatedGenericBeanDefinition();
-        definition.setBeanClass(AopDefinitionRegistry.class);
-        // 内部单例对象，beanName用全限定名
-        registry.registerBeanDefinition(AopDefinitionRegistry.class, definition);
+        // 注册动态代理创建bean定义
+        registry.registerBeanDefinition(AnnotationAwareAspectJAutoProxyCreator.class,
+                new AnnotatedGenericBeanDefinition(AnnotationAwareAspectJAutoProxyCreator.class));
+
+        // 注册aop工厂到单例池中，内部单例对象，beanName用全限定名
+        registry.registerBeanDefinition(AopDefinitionRegistry.class,
+                new AnnotatedGenericBeanDefinition(AopDefinitionRegistry.class));
         // AOP注册bean
         AopDefinitionRegistry aopRegistry = (AopDefinitionRegistry) factory.getBean(AopDefinitionRegistry.class);
 
@@ -102,7 +105,6 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
                     } else {
                         // TODO 是方法，扫描方法上的execution表达式
                     }
-
                 }
             }
 

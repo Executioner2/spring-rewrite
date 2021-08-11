@@ -1,6 +1,7 @@
 com\spring\InterfaceA.class
 com\spring\annotation\A.class
 com\spring\service\aaa.class
+com\spring\handler\MyHandler.class
 com\spring\service\impl\ProductServiceImpl.class
 com\spring\AbstractB.class
 com\spring\AbstractBImpl.class

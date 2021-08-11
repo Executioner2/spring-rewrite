@@ -4,6 +4,7 @@ com\spring\context\annotation\Import.class
 com\spring\context\annotation\Lazy.class
 com\spring\test\service\impl\UserServiceImpl.class
 com\spring\context\annotation\ImportBeanDefinitionRegistrar.class
+com\spring\aop\framework\autoproxy\AbstractAutoProxyCreator.class
 com\spring\beans\factory\config\SmartInstantiationAwareBeanPostProcessor.class
 com\spring\test\config\BeanScan.class
 com\spring\beans\factory\BeanFactory.class
@@ -39,6 +40,7 @@ com\spring\context\annotation\ComponentScan.class
 com\spring\test\config\BeanScan2.class
 com\spring\aspectj\lang\JoinPoint.class
 com\spring\beans\factory\ObjectFactory.class
+com\spring\aop\framework\aspectj\annotation\AnnotationAwareAspectJAutoProxyCreator.class
 com\spring\context\annotation\Scope.class
 com\spring\beans\factory\support\BeanDefinitionRegistry.class
 com\spring\test\service\ProductService.class

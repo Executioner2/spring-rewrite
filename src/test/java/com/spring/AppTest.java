@@ -4,16 +4,15 @@ import static org.junit.Assert.assertTrue;
 
 import com.spring.annotation.A;
 import com.spring.context.annotation.Import;
+import com.spring.handler.MyHandler;
 import com.spring.module.Category;
+import com.spring.service.ProductService;
 import com.spring.service.impl.ProductServiceImpl;
 import org.junit.Test;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,6 +240,17 @@ public class AppTest
         Class<ProductServiceImpl> productServiceClass = ProductServiceImpl.class;
         System.out.println(productServiceClass);
         System.out.println(productServiceClass.getName());
+
+        System.out.println(productServiceClass.getClass().getClassLoader().getName());
+    }
+
+    @Test
+    public void proxyTest() {
+        ProductService productService = new ProductServiceImpl();
+        System.out.println(productService instanceof Proxy);
+
+        ProductService proxyInstance = (ProductService) Proxy.newProxyInstance(productService.getClass().getClassLoader(), productService.getClass().getInterfaces(), new MyHandler(productService));
+        System.out.println(proxyInstance instanceof Proxy);
     }
 
 }
