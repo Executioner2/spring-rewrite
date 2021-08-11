@@ -3,6 +3,8 @@ package com.spring.test.service.impl;
 import com.spring.context.annotation.Component;
 import com.spring.test.service.ProductService;
 
+import java.math.BigDecimal;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -13,4 +15,22 @@ import com.spring.test.service.ProductService;
  */
 @Component
 public class ProductServiceImpl implements ProductService {
+    @Override
+    public void setPrice(String id, BigDecimal price) {
+
+    }
+
+    @Override
+    public BigDecimal getPrice(String id) {
+        return null;
+    }
+
+    @Override
+    public void removeProduct(String id) {
+
+    }
+
+    public void test() {
+
+    }
 }

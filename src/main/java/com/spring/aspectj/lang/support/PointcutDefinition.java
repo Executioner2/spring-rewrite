@@ -24,6 +24,9 @@ public class PointcutDefinition {
     // 切面
     private Class<?> aspect;
 
+    // 切面bean名称
+    private String aspectBeanName;
+
     public PointcutDefinition() {
     }
 
@@ -39,6 +42,19 @@ public class PointcutDefinition {
     public PointcutDefinition(String execution, Method executionMethod, Class<?> aspect) {
         this(execution, executionMethod);
         this.aspect = aspect;
+    }
+
+    public PointcutDefinition(String execution, Method executionMethod, Class<?> aspect, String aspectBeanName) {
+        this(execution, executionMethod, aspect);
+        this.aspectBeanName = aspectBeanName;
+    }
+
+    public String getAspectBeanName() {
+        return aspectBeanName;
+    }
+
+    public void setAspectBeanName(String aspectBeanName) {
+        this.aspectBeanName = aspectBeanName;
     }
 
     public Pattern getExecutionToPattern() {

@@ -77,7 +77,8 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
                     }
 
                     Around around = method.getDeclaredAnnotation(Around.class);
-                    PointcutDefinition pointcutDefinition = new PointcutDefinition(around.value(), method, beanClass);
+                    PointcutDefinition pointcutDefinition = new PointcutDefinition(around.value(), method,
+                            beanClass, beanDefinition.getBeanName());
                     pointcutDefinitions.add(pointcutDefinition);
                     String executionE = around.value();
 
@@ -98,7 +99,6 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
                         // 进行连接点扫描
                         aopRegistry.scanJoinPoint(factory, executionE, pointcutDefinition, threadPool);
 
-
                     } else {
                         // TODO 是方法，扫描方法上的execution表达式
                     }
@@ -107,7 +107,15 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
             }
 
             // 注册一个切面中的所有切入点
-            aopRegistry.registerPointcutDefinitionMap(beanClass.toString(), pointcutDefinitions);
+            aopRegistry.registerPointcutDefinitionMap(beanClass.getName(), pointcutDefinitions);
+        }
+
+        // 等待扫描完成
+        try {
+            threadPool.shutdown();
+            threadPool.awaitTermination(300, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }

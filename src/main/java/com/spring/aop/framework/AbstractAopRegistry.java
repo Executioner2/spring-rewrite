@@ -1,12 +1,10 @@
 package com.spring.aop.framework;
 
+import com.spring.aspectj.lang.support.JoinPointDefinition;
 import com.spring.aspectj.lang.support.PointcutDefinition;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -26,7 +24,7 @@ public abstract class AbstractAopRegistry implements AopRegistry{
     private final Map<String, List<PointcutDefinition>> pointcutDefinitionMap = new ConcurrentHashMap<>(16);
 
     // 连接点集合
-    private final Map<String, List<String>> joinPointDefinitionMap = new ConcurrentHashMap<>(24);
+    private final Map<String, Map<String, List<JoinPointDefinition>>> joinPointDefinitionMap = new ConcurrentHashMap<>(24);
 
 
     /**
@@ -53,7 +51,7 @@ public abstract class AbstractAopRegistry implements AopRegistry{
      * @return
      */
     @Override
-    public List<String> getJoinPointDefinition(String className) {
+    public Map<String, List<JoinPointDefinition>> getJoinPointDefinition(String className) {
         return this.joinPointDefinitionMap.get(className);
     }
 
@@ -63,11 +61,36 @@ public abstract class AbstractAopRegistry implements AopRegistry{
      * @param joinPoints
      */
     @Override
-    public void registerJoinPointDefinitionMap(String className, List<String> joinPoints) {
+    public void registerJoinPointDefinitionMap(String className, Map<String, List<JoinPointDefinition>> joinPoints) {
         if (joinPoints == null) {
             throw new IllegalStateException("连接点集合不能为空！");
         }
         this.joinPointDefinitionMap.put(className, joinPoints);
+    }
+
+    /**
+     * 注册连接点
+     * @param className 目标对象全限定类名
+     * @param methodName 目标方法名
+     * @param joinPoint 连接点定义
+     */
+    @Override
+    public void registerJoinPointDefinitionMap(String className, String methodName, JoinPointDefinition joinPoint) {
+        Map<String, List<JoinPointDefinition>> joinPointDefinition = this.getJoinPointDefinition(className);
+
+        if (joinPointDefinition == null) {
+            joinPointDefinition = new HashMap<>();
+            this.registerJoinPointDefinitionMap(className, joinPointDefinition);
+        }
+
+        List<JoinPointDefinition> joinPointDefinitions = joinPointDefinition.get(methodName);
+
+        if (joinPointDefinitions == null) {
+            joinPointDefinitions = new ArrayList<>();
+            joinPointDefinition.put(methodName, joinPointDefinitions);
+        }
+
+        joinPointDefinitions.add(joinPoint);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.spring.aop.framework.support;
 
 import com.spring.aop.framework.AbstractAopRegistry;
 import com.spring.aop.framework.AspectExecutionEUtil;
+import com.spring.aspectj.lang.support.JoinPointDefinition;
 import com.spring.aspectj.lang.support.PointcutDefinition;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
@@ -39,7 +40,7 @@ public class AopDefinitionRegistry extends AbstractAopRegistry {
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
-                doScanJoinPoint(factory, pattern);
+                doScanJoinPoint(factory, pointcutDefinition);
             }
         });
 
@@ -48,32 +49,43 @@ public class AopDefinitionRegistry extends AbstractAopRegistry {
     /**
      * 扫描连接点
      * @param factory
-     * @param pattern
+     * @param pointcutDefinition
      */
-    private void doScanJoinPoint(ConfigurableListableBeanFactory factory, Pattern pattern) {
+    private void doScanJoinPoint(ConfigurableListableBeanFactory factory, PointcutDefinition pointcutDefinition) {
+        Pattern pattern = pointcutDefinition.getExecutionToPattern();
         Iterator<String> beanNamesIterator = factory.getBeanNamesIterator();
         while (beanNamesIterator.hasNext()) {
             String key = beanNamesIterator.next();
             BeanDefinition beanDefinition = factory.getBeanDefinition(key);
-
-            Class<?>[] interfaces = beanDefinition.getBeanClass().getInterfaces();
+            Class<?> beanClass = beanDefinition.getBeanClass();
+            Class<?>[] interfaces = beanClass.getInterfaces();
 
             // 扫描所有的接口，只有接口的方法才能被当作连接点
             for (Class<?> anInterface : interfaces) {
                 Method[] methods = anInterface.getDeclaredMethods();
                 for (Method method : methods) {
-                    Matcher matcher = pattern.matcher(method.toString());
+                    // 取出实现类中的接口实现方法
+                    try {
+                        Method implMethod = beanClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
+                        Matcher matcher = pattern.matcher(implMethod.toString());
 
-                    if (matcher.matches()) {
-                        // 匹配成功，需要代理
-                        if (!beanDefinition.isProxy()) {
-                            beanDefinition.setProxy(true);
+                        if (matcher.matches()) {
+                            // 匹配成功，需要代理
+                            if (!beanDefinition.isProxy()) {
+                                beanDefinition.setProxy(true);
+                            }
+                            // 注册到连接点定义集合中
+                            this.registerJoinPointDefinitionMap(beanDefinition.getBeanClassName(), implMethod.toString(),
+                                    new JoinPointDefinition(pointcutDefinition.getAspectBeanName(),
+                                            pointcutDefinition.getExecutionMethod()));
+
                         }
-                        
+
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-
         }
     }
 

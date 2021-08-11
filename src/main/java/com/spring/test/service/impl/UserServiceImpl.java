@@ -13,4 +13,17 @@ import com.spring.test.service.UserService;
  */
 @Component
 public class UserServiceImpl implements UserService {
+    @Override
+    public void registerUser(String username, String password) {
+
+    }
+
+    @Override
+    public boolean login(String username, String password) {
+        return false;
+    }
+
+    public void test() {
+
+    }
 }

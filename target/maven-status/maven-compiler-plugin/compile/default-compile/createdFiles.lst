@@ -29,6 +29,7 @@ com\spring\AppTest.class
 com\spring\beans\factory\annotation\AnnotatedGenericBeanDefinition.class
 com\spring\aop\framework\AbstractAopRegistry.class
 com\spring\beans\factory\support\AbstractBeanDefinition.class
+com\spring\aspectj\lang\support\JoinPointDefinition.class
 com\spring\test\service\UserService.class
 com\spring\aop\framework\AspectExecutionEUtil$ETransitionRegex.class
 com\spring\aspectj\lang\ProceedingJoinPoint.class

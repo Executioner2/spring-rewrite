@@ -41,6 +41,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
                 beanDefinition.setBeanClass(componentClass);
                 // 取得beanName
                 String beanName = BeanDefinitionReaderUtils.generateBeanName(beanDefinition);
+                beanDefinition.setBeanName(beanName); // 设置beanName
                 // 注册到beanDefinitionMap中去
                 beanFactory.registerBeanDefinition(beanName, beanDefinition);
                 // 加入到配置类

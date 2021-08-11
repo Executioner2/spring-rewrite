@@ -23,7 +23,7 @@ final public class AspectExecutionEUtil {
      */
     private final static class ExecutionERegex {
         // execution表达式合法性检测的正则表达式
-        final private static String EXECUTION_E = "^(( *(public|private|default|protected) +)?( *(((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)) +((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)( +((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?)?)$";
+        final private static String EXECUTION_E = "^(( *(public|private|default|protected) +)?( *(((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)|(\\*)) +((((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+(( *, *((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)+ *)?))\\)( +((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)? *)+(( *, *((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)+ *)?)?)$";
 
         // 方法（字符串）正则表达式，*转(\w)*一定在.转和..转之前，所以在*转后判断是否为方法名就需要把\*替换为\(\\w\)\*
         final private static String STRING_REGEX = "^(((\\(\\\\w\\)\\*)?\\w+(\\(\\\\w\\)\\*)?)+)$";
@@ -32,10 +32,10 @@ final public class AspectExecutionEUtil {
         final private static String ACCESS_RIGHT = "^( *(public|private|default|protected))";
 
         // 方法定义正则表达式
-        final private static String NAME_PATTERN = "((((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?))\\)";
+        final private static String NAME_PATTERN = "((((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)|(\\*)|(\\*.\\*))\\(((\\.\\.)|( *((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+(( *, *((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)+ *)?))\\)";
 
         // 异常正则表达式
-        final private static String THROW_PATTERN = "( +((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)? *)+(( *, *((\\*\\.)?(\\.\\w|\\w|\\w\\*|\\.\\*)(\\.\\.\\*)?)+)+ *)?)$";
+        final private static String THROW_PATTERN = "( +((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)? *)+(( *, *((\\*\\.)?((\\w|\\*)\\.\\w|\\w|\\w\\*|\\.\\*|(\\*|\\w)\\.\\.\\w)(\\.\\.\\*)?)+)+ *)?)$";
 
         // execution合法性检测的正则表达式对象
         final public static Pattern executionRegex = Pattern.compile(EXECUTION_E);
@@ -77,7 +77,7 @@ final public class AspectExecutionEUtil {
         final private static String CHART_MATCHING = "(\\w)*";
 
         // 包匹配（把..替换为正则表达式）
-        final private static String PACKAGE_MATCHING = "(\\.(\\w)+)+";
+        final private static String PACKAGE_MATCHING = "(\\.(\\w)+\\.)+";
 
         // 任意形参匹配
         final private static String ARBITRARILY_FORMAL = "(\\w|,|\\.)*";
@@ -124,8 +124,6 @@ final public class AspectExecutionEUtil {
      * 4、全限定类名.方法(形参)：com.study.User.search(java.lang.String,java.util.Date)
      * 5、异常：throws java.lang.Exception
      * 最终拼凑的正则表达式必须包含这五部分，其中1、2、5为可选的，正则表达是应该给这三项的次数限定为零次或一次。
-     * 方法匹配正则表达式：
-     * ^(((public|private|default|protected) )?((\w+ )*)?(((\w|\.)+|\*) )(\w|\*|\.)+\((\w|,|\.)*\)( throws (\w|\.|,)+)?)$
      *
      * 检测execution表达式合法性：
      * @see ExecutionERegex#EXECUTION_E
@@ -140,7 +138,7 @@ final public class AspectExecutionEUtil {
      * 左边为execution表达式，右边为正则表达式
      * *转：* 等价于 (\w)*
      * .转：. 等价于 \.
-     * ..转：.. 等价于 (\.(\w)+)+
+     * ..转：.. 等价于 (\.(\w)+\.)+
      * 转换顺序一定严格按照* . ..的顺序 且在进行..转时 ..需要替换为\.\.
      *
      * 由于全限定类名和方法是粘连在一起的，所以最多可以拆分成四个部分，
@@ -317,8 +315,9 @@ final public class AspectExecutionEUtil {
                 }
                 params += arg + ",";
             }
-            params = "\\(" + params.substring(0, params.length() - 1) + "\\)";
+            params = params.substring(0, params.length() - 1);
         }
+
 
         if ("*".equals(namePattern)) {
             namePattern = ETransitionRegex.NAME_PATTERN;

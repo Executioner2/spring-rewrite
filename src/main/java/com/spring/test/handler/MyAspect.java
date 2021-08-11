@@ -18,7 +18,7 @@ import java.util.Date;
 @Component
 public class MyAspect {
 
-    @Around("execution(* com.spring.test..*(..))")
+    @Around("execution(* com.spring.test..set(String))")
     public void pointcut() {
 
     }
@@ -28,7 +28,7 @@ public class MyAspect {
 
     }
 
-    @Around("execution(public * com.*(..))")
+    @Around("execution(public boolean com.spring.test.service.impl..login(String, String))")
     private static String pointcut02(String str, Date create) {
         return "";
     }

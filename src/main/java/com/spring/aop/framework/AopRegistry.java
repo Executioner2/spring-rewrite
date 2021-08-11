@@ -1,10 +1,12 @@
 package com.spring.aop.framework;
 
+import com.spring.aspectj.lang.support.JoinPointDefinition;
 import com.spring.aspectj.lang.support.PointcutDefinition;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -29,7 +31,7 @@ public interface AopRegistry {
     List<PointcutDefinition> getPointcutDefinition(String aspectClassName);
 
     // 获取连接点map的value
-    List<String> getJoinPointDefinition(String className);
+    Map<String, List<JoinPointDefinition>> getJoinPointDefinition(String className);
 
     // 注册aspect名称
     void registerAspectNameList(String aspectClassName);
@@ -38,7 +40,10 @@ public interface AopRegistry {
     void registerPointcutDefinitionMap(String aspectClassName, List<PointcutDefinition> pointcuts);
 
     // 注册连接点
-    void registerJoinPointDefinitionMap(String className, List<String> joinPoints);
+    void registerJoinPointDefinitionMap(String className, Map<String, List<JoinPointDefinition>> joinPoints);
+
+    // 注册连接点
+    void registerJoinPointDefinitionMap(String className, String methodName, JoinPointDefinition joinPoint);
 
     // 扫描连接点
     void scanJoinPoint(ConfigurableListableBeanFactory factory, String executionE, PointcutDefinition pointcutDefinition, ThreadPoolExecutor threadPool);

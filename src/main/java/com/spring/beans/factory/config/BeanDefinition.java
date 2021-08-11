@@ -51,4 +51,10 @@ public interface BeanDefinition {
 
     // 是否是需要代理的对象
     boolean isProxy();
+
+    // 设置beanName
+    void setBeanName(String beanName);
+
+    // 获取beanName
+    String getBeanName();
 }

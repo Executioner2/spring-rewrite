@@ -79,9 +79,9 @@ final class PostProcessorRegistrationDelegate {
             }
 
             // 开始注册bean定义
-            beanDefinitionScanList.stream().forEach(item -> {
-                String beanName = (String) ((Object[]) item)[0];
-                BeanDefinition beanDefinition = (BeanDefinition) ((Object[]) item)[1];
+            beanDefinitionScanList.stream().forEach(item -> {                ;
+                BeanDefinition beanDefinition = (BeanDefinition) item;
+                String beanName = beanDefinition.getBeanName();
 
                 if (beanName.isBlank()) {
                     throw new IllegalStateException("beanName（" + beanName + "）不合法，" + beanDefinition.getBeanClassName());
@@ -188,6 +188,7 @@ final class PostProcessorRegistrationDelegate {
 
                     BeanDefinition beanDefinition = new ScannedGenericBeanDefinition(aClass);
                     beanDefinition.setBeanClass(aClass);
+                    beanDefinition.setBeanName(beanNameArray[1]);
 
                     // 实例化方式
                     if (aClass.isAnnotationPresent(Scope.class)) {
@@ -208,12 +209,10 @@ final class PostProcessorRegistrationDelegate {
                     if (aClass.isAnnotationPresent(Lazy.class)) {
                         Lazy lazy = aClass.getDeclaredAnnotation(Lazy.class);
                         boolean value = lazy.value();
-                        if (value) {
-                            beanDefinition.setLazyInit(value);
-                        }
+                        beanDefinition.setLazyInit(value);
                     }
 
-                    return new Object[]{beanNameArray[1], beanDefinition};
+                    return beanDefinition;
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -234,7 +233,7 @@ final class PostProcessorRegistrationDelegate {
             }
 
             // 返回的第一个参数为beanName，第二个参数为beanDefinition
-            Object[] result = (Object[]) packageScan(packageName, f);
+            BeanDefinition result = (BeanDefinition) packageScan(packageName, f);
             if (result != null) {
                 list.add(result);
             }

@@ -5,12 +5,14 @@ import static org.junit.Assert.assertTrue;
 import com.spring.annotation.A;
 import com.spring.context.annotation.Import;
 import com.spring.module.Category;
+import com.spring.service.impl.ProductServiceImpl;
 import org.junit.Test;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
@@ -213,4 +215,32 @@ public class AppTest
         }
 
     }
+
+    @Test
+    public void interfaceTest() {
+        Class<ProductServiceImpl> productServiceClass = ProductServiceImpl.class;
+        Class<?>[] interfaces = productServiceClass.getInterfaces();
+
+        for (Class<?> anInterface : interfaces) {
+            Method[] methods = anInterface.getMethods();
+            for (Method method : methods) {
+                try {
+                    Method m = productServiceClass.getMethod(method.getName(), method.getParameterTypes());
+                    System.out.println("方法是接口实现方法" + m.toString());
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    System.out.println("方法不存在");
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    @Test
+    public void test05() {
+        Class<ProductServiceImpl> productServiceClass = ProductServiceImpl.class;
+        System.out.println(productServiceClass);
+        System.out.println(productServiceClass.getName());
+    }
+
 }

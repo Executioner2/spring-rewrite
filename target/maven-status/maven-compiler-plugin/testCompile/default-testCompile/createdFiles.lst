@@ -1,8 +1,11 @@
 com\spring\InterfaceA.class
 com\spring\annotation\A.class
+com\spring\service\aaa.class
+com\spring\service\impl\ProductServiceImpl.class
 com\spring\AbstractB.class
 com\spring\AbstractBImpl.class
 com\spring\AppTest.class
 com\spring\module\Category.class
+com\spring\service\ProductService.class
 com\spring\annotation\B.class
 com\spring\Application.class

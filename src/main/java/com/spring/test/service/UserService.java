@@ -9,4 +9,7 @@ package com.spring.test.service;
  * @Description：
  */
 public interface UserService {
+    void registerUser(String username, String password);
+
+    boolean login(String username, String password);
 }
