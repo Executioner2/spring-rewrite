@@ -17,4 +17,6 @@ public interface ProductService {
     BigDecimal getPrice(String id);
 
     void removeProduct(String id);
+
+    UserService getUserService();
 }

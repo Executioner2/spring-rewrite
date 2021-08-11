@@ -12,4 +12,6 @@ import java.math.BigDecimal;
  */
 public interface ProductService {
     void setPrice(String id, BigDecimal price);
+
+    String getName();
 }

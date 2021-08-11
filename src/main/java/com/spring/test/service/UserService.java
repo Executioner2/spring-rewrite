@@ -12,4 +12,6 @@ public interface UserService {
     void registerUser(String username, String password);
 
     boolean login(String username, String password);
+
+    ProductService getProductService();
 }

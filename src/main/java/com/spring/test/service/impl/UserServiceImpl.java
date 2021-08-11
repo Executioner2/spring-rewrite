@@ -1,6 +1,6 @@
 package com.spring.test.service.impl;
 
-import com.spring.annotation.Autowired;
+import com.spring.beans.factory.annotation.Autowired;
 import com.spring.context.annotation.Component;
 import com.spring.test.service.ProductService;
 import com.spring.test.service.UserService;
@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean login(String username, String password) {
         return false;
+    }
+
+    @Override
+    public ProductService getProductService() {
+        return this.productService;
     }
 
     public void test() {

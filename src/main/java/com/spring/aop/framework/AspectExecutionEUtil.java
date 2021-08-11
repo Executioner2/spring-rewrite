@@ -211,8 +211,6 @@ final public class AspectExecutionEUtil {
 
         executionE = "^(" + modifiersPattern + ETransitionRegex.OPTIONAL_MODIFIERS_PATTERN + retTypePattern + namePattern + throwPattern + ")$";
 
-        System.out.println(executionE);
-
         return Pattern.compile(executionE);
     }
 

@@ -101,16 +101,6 @@ final class PostProcessorRegistrationDelegate {
                 }
             });
 
-            // 把所有beanDefinitionMap中的bean定义注册到mergedBeanDefinitions中
-            beanNamesIterator = beanFactory.getBeanNamesIterator();
-            DefaultListableBeanFactory dbf = (DefaultListableBeanFactory) beanFactory;
-            while (beanNamesIterator.hasNext()) {
-                String key = beanNamesIterator.next();
-                BeanDefinition beanDefinition = beanFactory.getBeanDefinition(key);
-                // 这里深度复制把ScannedGenericBeanDefinition转换为RootBeanDefinition就很cd
-                dbf.getMergedBeanDefinition(key, beanDefinition);
-            }
-
             // 配置类方法调用
             Iterator<String> iterator = registry.getConfigurationClassMapKeySetIterator();
             while (iterator.hasNext()) {
@@ -156,6 +146,15 @@ final class PostProcessorRegistrationDelegate {
                 }
             }
 
+            // 把所有beanDefinitionMap中的bean定义注册到mergedBeanDefinitions中
+            beanNamesIterator = beanFactory.getBeanNamesIterator();
+            DefaultListableBeanFactory dbf = (DefaultListableBeanFactory) beanFactory;
+            while (beanNamesIterator.hasNext()) {
+                String key = beanNamesIterator.next();
+                BeanDefinition beanDefinition = beanFactory.getBeanDefinition(key);
+                // 这里深度复制把ScannedGenericBeanDefinition转换为RootBeanDefinition就很cd
+                dbf.getMergedBeanDefinition(key, beanDefinition);
+            }
         }
     }
 

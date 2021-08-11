@@ -244,11 +244,12 @@ public class AppTest
 
     @Test
     public void proxyTest() {
-        ProductService productService = new ProductServiceImpl();
-        System.out.println(productService instanceof Proxy);
+        ProductServiceImpl productService = new ProductServiceImpl();
 
         ProductService proxyInstance = (ProductService) Proxy.newProxyInstance(productService.getClass().getClassLoader(), productService.getClass().getInterfaces(), new MyHandler(productService));
         System.out.println(proxyInstance instanceof Proxy);
+        System.out.println(proxyInstance instanceof ProductServiceImpl);
+        System.out.println(proxyInstance.getName());
     }
 
     @Test

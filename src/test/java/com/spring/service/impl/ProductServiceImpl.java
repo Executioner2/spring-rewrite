@@ -14,13 +14,18 @@ import java.math.BigDecimal;
  * @Description：
  */
 public class ProductServiceImpl implements ProductService {
-    private String name;
+    private String name = "123";
 
     private UserService userService;
 
     @Override
     public void setPrice(String id, BigDecimal price) {
 
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     public void set() {

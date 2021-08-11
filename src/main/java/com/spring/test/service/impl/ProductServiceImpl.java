@@ -35,6 +35,11 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Override
+    public UserService getUserService() {
+        return this.userService;
+    }
+
     public void test() {
 
     }

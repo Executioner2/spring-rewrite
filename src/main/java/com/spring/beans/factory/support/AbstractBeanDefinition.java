@@ -156,6 +156,7 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
      */
     @Override
     public void setProxy(boolean proxy) {
+
         this.proxy = proxy;
     }
 

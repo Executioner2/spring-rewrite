@@ -75,6 +75,8 @@ public final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Se
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
+
+
+        return method.invoke(this.target, args);
     }
 }
