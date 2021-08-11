@@ -1,7 +1,8 @@
 package com.spring.aop.framework.autoproxy;
 
 import com.spring.aop.framework.JdkDynamicAopProxy;
-import com.spring.beans.factory.BeanFactory;
+import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 
 import java.lang.reflect.Proxy;
@@ -15,17 +16,32 @@ import java.lang.reflect.Proxy;
  * @Description：
  */
 public abstract class AbstractAutoProxyCreator implements SmartInstantiationAwareBeanPostProcessor {
+    private ConfigurableListableBeanFactory beanFactory;
+
+    public AbstractAutoProxyCreator() {
+    }
+
+    public AbstractAutoProxyCreator(ConfigurableListableBeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
+
+    public ConfigurableListableBeanFactory getBeanFactory() {
+        return beanFactory;
+    }
+
+    public void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
     /**
      * 提前创建代理对象，和官方实现有出入
      * @param bean
      * @param beanName
-     * @param beanFactory
      * @return
      */
     @Override
-    public Object getEarlyBeanReference(Object bean, String beanName, BeanFactory beanFactory) {
-        return wrapIfNecessary(bean, beanName, beanFactory);
+    public Object getEarlyBeanReference(Object bean, String beanName) {
+        return wrapIfNecessary(bean, beanName);
     }
 
     /**
@@ -50,8 +66,13 @@ public abstract class AbstractAutoProxyCreator implements SmartInstantiationAwar
      */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
+        BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+        if (beanDefinition.isProxy()) {
+            // 需要代理
+            return wrapIfNecessary(bean, beanName);
+        }
 
-        return wrapIfNecessary(bean, beanName, null);
+        return bean;
     }
 
     /**
@@ -60,7 +81,7 @@ public abstract class AbstractAutoProxyCreator implements SmartInstantiationAwar
      * @param beanName
      * @return
      */
-    protected Object wrapIfNecessary(Object bean, String beanName, BeanFactory beanFactory) {
+    protected Object wrapIfNecessary(Object bean, String beanName) {
         if (bean instanceof Proxy) {
             // 已经是代理对象了，直接返回
             return bean;
@@ -70,7 +91,7 @@ public abstract class AbstractAutoProxyCreator implements SmartInstantiationAwar
         // 省略了工厂设计模式
         // 创建代理对象
         JdkDynamicAopProxy jdkDynamicAopProxy = new JdkDynamicAopProxy(bean);
-        bean = jdkDynamicAopProxy.getProxy(bean.getClass(), beanFactory);
+        bean = jdkDynamicAopProxy.getProxy(bean.getClass(), this.beanFactory);
 
         return bean;
 

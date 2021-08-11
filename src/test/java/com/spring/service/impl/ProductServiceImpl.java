@@ -1,6 +1,7 @@
 package com.spring.service.impl;
 
 import com.spring.service.ProductService;
+import com.spring.service.UserService;
 
 import java.math.BigDecimal;
 
@@ -13,6 +14,10 @@ import java.math.BigDecimal;
  * @Description：
  */
 public class ProductServiceImpl implements ProductService {
+    private String name;
+
+    private UserService userService;
+
     @Override
     public void setPrice(String id, BigDecimal price) {
 

@@ -160,10 +160,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Field[] declaredFields = beanObject.getClass().getDeclaredFields();
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(Autowired.class)) {
-//                Autowired autowired = field.getDeclaredAnnotation(Autowired.class);
                 // 获取字段类型
-                Type genericType = field.getGenericType();
-                RootBeanDefinition mergedBeanDefinition = getMergedBeanDefinition(genericType);
+                Class<?> type = field.getType();
+                RootBeanDefinition mergedBeanDefinition = getMergedBeanDefinition(type);
                 if (mergedBeanDefinition == null) {
                     throw new NullPointerException("要注入的对象bean定义不存在");
                 }
@@ -193,7 +192,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         // 判断是否开启了动态代理，和官方有出入
         if (mbd.isProxy()) {
             SmartInstantiationAwareBeanPostProcessor autoProxyCreator = (AnnotationAwareAspectJAutoProxyCreator) getBean(AnnotationAwareAspectJAutoProxyCreator.class);
-            exposedObject = autoProxyCreator.getEarlyBeanReference(bean, beanName, this);
+            exposedObject = autoProxyCreator.getEarlyBeanReference(bean, beanName);
         }
 
         return exposedObject;

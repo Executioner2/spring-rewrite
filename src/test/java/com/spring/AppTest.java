@@ -7,6 +7,7 @@ import com.spring.context.annotation.Import;
 import com.spring.handler.MyHandler;
 import com.spring.module.Category;
 import com.spring.service.ProductService;
+import com.spring.service.UserService;
 import com.spring.service.impl.ProductServiceImpl;
 import org.junit.Test;
 
@@ -14,10 +15,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -251,6 +249,11 @@ public class AppTest
 
         ProductService proxyInstance = (ProductService) Proxy.newProxyInstance(productService.getClass().getClassLoader(), productService.getClass().getInterfaces(), new MyHandler(productService));
         System.out.println(proxyInstance instanceof Proxy);
+    }
+
+    @Test
+    public void test06() {
+        System.out.println(ProductService.class.isAssignableFrom(ProductServiceImpl.class));
     }
 
 }

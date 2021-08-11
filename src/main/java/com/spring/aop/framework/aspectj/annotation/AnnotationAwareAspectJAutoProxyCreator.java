@@ -1,6 +1,7 @@
 package com.spring.aop.framework.aspectj.annotation;
 
 import com.spring.aop.framework.autoproxy.AbstractAutoProxyCreator;
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 
 /**
  * @Program: spring-rewrite
@@ -11,4 +12,10 @@ import com.spring.aop.framework.autoproxy.AbstractAutoProxyCreator;
  * @Description：需要提前创建bean
  */
 public class AnnotationAwareAspectJAutoProxyCreator extends AbstractAutoProxyCreator {
+    public AnnotationAwareAspectJAutoProxyCreator() {
+    }
+
+    public AnnotationAwareAspectJAutoProxyCreator(ConfigurableListableBeanFactory beanFactory) {
+        super(beanFactory);
+    }
 }

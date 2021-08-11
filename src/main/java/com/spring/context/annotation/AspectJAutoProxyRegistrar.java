@@ -47,6 +47,9 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
         // 注册动态代理创建bean定义
         registry.registerBeanDefinition(AnnotationAwareAspectJAutoProxyCreator.class,
                 new AnnotatedGenericBeanDefinition(AnnotationAwareAspectJAutoProxyCreator.class));
+        AnnotationAwareAspectJAutoProxyCreator proxyCreator = (AnnotationAwareAspectJAutoProxyCreator) factory
+                .getBean(AnnotationAwareAspectJAutoProxyCreator.class);
+        proxyCreator.setBeanFactory(factory);
 
         // 注册aop工厂到单例池中，内部单例对象，beanName用全限定名
         registry.registerBeanDefinition(AopDefinitionRegistry.class,

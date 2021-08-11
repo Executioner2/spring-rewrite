@@ -16,10 +16,9 @@ public interface SmartInstantiationAwareBeanPostProcessor extends BeanPostProces
      * 提前创建动态代理对象
      * @param bean
      * @param beanName
-     * @param beanFactory
      * @return
      */
-    default Object getEarlyBeanReference(Object bean, String beanName, BeanFactory beanFactory) {
+    default Object getEarlyBeanReference(Object bean, String beanName) {
         return bean;
     }
 }

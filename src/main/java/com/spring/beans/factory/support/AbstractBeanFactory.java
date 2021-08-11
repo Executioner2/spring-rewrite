@@ -128,15 +128,23 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      * @param beanClass
      * @return
      */
-    public RootBeanDefinition getMergedBeanDefinition(Object beanClass) {
+    public RootBeanDefinition getMergedBeanDefinition(Class<?> beanClass) {
         Iterator<String> iterator = this.mergedBeanDefinitions.keySet().iterator();
+        // 是不是接口
+        boolean anInterface = beanClass.isInterface();
+
         while (iterator.hasNext()) {
             String key = iterator.next();
             RootBeanDefinition rootBeanDefinition = this.mergedBeanDefinitions.get(key);
-            if (rootBeanDefinition.getBeanClass().equals(beanClass)) {
+            Class<?> rootBeanDefinitionBeanClass = rootBeanDefinition.getBeanClass();
+            if (anInterface && beanClass.isAssignableFrom(rootBeanDefinitionBeanClass)) {
+                // 是接口，并且该类实现了此接口就直接返回此root bean定义
+                return rootBeanDefinition;
+            } else if (rootBeanDefinitionBeanClass.equals(beanClass)) {
                 return rootBeanDefinition;
             }
         }
+
         return null;
     }
 
@@ -158,22 +166,6 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     /**
-     * 获取mbd
-     * @param name
-     * @param requiredType
-     * @return
-     */
-    private RootBeanDefinition tryGetMergedBeanDefinition(String name, Class<?> requiredType) {
-        RootBeanDefinition mbd = null;
-        if (requiredType != null) {
-            mbd = this.getMergedBeanDefinition(requiredType.getName());
-        } else {
-            mbd = this.getMergedBeanDefinition(name);
-        }
-        return mbd;
-    }
-
-    /**
      * 获取bean对象，spring官方源码有更多参数，
      * 这里先进行简单实现，复杂的处理等后续完善
      * @param beanClassName
@@ -181,13 +173,12 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
      * @return
      */
     protected Object doGetBean(String beanClassName, Class<?> requiredType, Object[] args) {
-        // 获取beanName，因为传来的可能是全限定名称，那么就需要进行剪切。不是则返回原来的beanName
-        String beanName = BeanDefinitionReaderUtils.generateBeanName(beanClassName);
+        // 动态获取bean名称
+        String beanName = this.getBeanName(beanClassName, requiredType);
         // 1、先尝试获取单例对象
         Object singleton = this.getSingleton(beanName);
         if (singleton == null) {
-            // 为空则创建对象，先从mergedBeanDefinitions中取得rootBeanDefinition
-            RootBeanDefinition mbd = this.tryGetMergedBeanDefinition(beanName, requiredType);
+            RootBeanDefinition mbd = this.getMergedBeanDefinition(beanName);
 
             // 单例模式
             if (mbd.isSingleton()) {
@@ -211,6 +202,28 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     // 创建bean对象
     protected abstract Object createBean(String beanName, RootBeanDefinition mbd, Object[] args);
 
+    /**
+     * 获取bean名称
+     * @param beanClassName
+     * @param beanClass
+     * @return
+     */
+    protected String getBeanName(String beanClassName, Class beanClass) {
+        if (this.containsBeanDefinition(beanClassName)) {
+            return beanClassName;
+        }
+
+        String beanName = BeanDefinitionReaderUtils.generateBeanName(beanClassName);
+        if (this.containsBeanDefinition(beanName)) {
+            return beanName;
+        }
+
+        if (beanClass == null || !this.containsBeanDefinition(beanClass.getName())) {
+            throw new NullPointerException("没有这个bean的定义：" + beanClassName);
+        }
+
+        return beanClass.getName();
+    }
 
 
     /**

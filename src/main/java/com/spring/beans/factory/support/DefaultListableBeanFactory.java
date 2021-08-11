@@ -103,7 +103,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     public BeanDefinition getBeanDefinition(String beanName) {
         BeanDefinition beanDefinition = this.beanDefinitionMap.get(beanName);
         if (beanDefinition == null) {
-            throw new NullPointerException("bean定义不存在"); // XXX 将就抛空指针异常
+            throw new NullPointerException("bean定义不存在：" + beanName); // XXX 将就抛空指针异常
         }
         return this.beanDefinitionMap.get(beanName);
     }

@@ -11,10 +11,6 @@ import com.spring.beans.factory.BeanFactory;
  * @Description：
  */
 public interface AopProxy {
-
-    // 创建获取代理对象
-    Object getProxy();
-
     // 创建获取代理对象
     Object getProxy(ClassLoader classLoader);
 

@@ -33,23 +33,11 @@ public final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Se
     // 目标对象
     private Object target;
 
-    // 代理对象
-    private Object proxyObject;
 
     public JdkDynamicAopProxy(Object target) {
         this.target = target;
         // 获取所有接口
         this.proxiedInterfaces = target.getClass().getInterfaces();
-    }
-
-
-    /**
-     * 取得代理对象
-     * @return
-     */
-    @Override
-    public Object getProxy() {
-        return this.proxyObject;
     }
 
     /**
