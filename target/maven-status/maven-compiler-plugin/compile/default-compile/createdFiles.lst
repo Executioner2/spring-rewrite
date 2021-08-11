@@ -4,6 +4,7 @@ com\spring\context\annotation\Import.class
 com\spring\context\annotation\Lazy.class
 com\spring\test\service\impl\UserServiceImpl.class
 com\spring\context\annotation\ImportBeanDefinitionRegistrar.class
+com\spring\beans\factory\config\SmartInstantiationAwareBeanPostProcessor.class
 com\spring\test\config\BeanScan.class
 com\spring\beans\factory\BeanFactory.class
 com\spring\beans\factory\annotation\Autowired.class

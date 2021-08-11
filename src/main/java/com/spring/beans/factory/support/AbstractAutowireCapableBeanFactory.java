@@ -189,7 +189,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object exposedObject = bean;
 
         // 判断是否开启了动态代理
+        if (mbd.isProxy()) {
 
+        }
 
         return exposedObject;
     }
