@@ -17,6 +17,7 @@ com\spring\aspectj\lang\support\PointcutDefinition.class
 com\spring\aop\framework\AopRegistry.class
 com\spring\context\support\AbstractApplicationContext.class
 com\spring\test\handler\MyAspect.class
+com\spring\aop\framework\aspectj\MethodInvocationProceedingJoinPoint.class
 com\spring\beans\factory\support\RootBeanDefinition.class
 com\spring\context\ApplicationContext.class
 com\spring\context\ConfigurableApplicationContext.class

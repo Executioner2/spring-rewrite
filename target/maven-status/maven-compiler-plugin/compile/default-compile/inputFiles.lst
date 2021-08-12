@@ -47,6 +47,7 @@ E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\handle
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aop\framework\AspectExecutionEUtil.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\annotation\Autowired.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\test\config\BeanScan.java
+E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aop\framework\aspectj\MethodInvocationProceedingJoinPoint.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\aspectj\lang\support\JoinPointDefinition.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\context\annotation\Scope.java
 E:\JavaProject\promote-study\spring-rewrite\src\main\java\com\spring\beans\factory\config\ConfigurableBeanFactory.java

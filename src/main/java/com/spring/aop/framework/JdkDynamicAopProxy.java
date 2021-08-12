@@ -1,5 +1,6 @@
 package com.spring.aop.framework;
 
+import com.spring.aop.framework.aspectj.MethodInvocationProceedingJoinPoint;
 import com.spring.aop.framework.support.AopDefinitionRegistry;
 import com.spring.aspectj.lang.support.JoinPointDefinition;
 import com.spring.beans.factory.BeanFactory;
@@ -33,6 +34,9 @@ public final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Se
     // 目标对象
     private Object target;
 
+    // factory
+    private BeanFactory beanFactory;
+
 
     public JdkDynamicAopProxy(Object target) {
         this.target = target;
@@ -59,7 +63,8 @@ public final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Se
      */
     @Override
     public Object getProxy(Class clazz, BeanFactory beanFactory) {
-        AopDefinitionRegistry adr = (AopDefinitionRegistry) beanFactory.getBean(AopDefinitionRegistry.class);
+        this.beanFactory = beanFactory;
+        AopDefinitionRegistry adr = (AopDefinitionRegistry) this.beanFactory.getBean(AopDefinitionRegistry.class);
         this.proxyMethodMap.putAll(adr.getJoinPointDefinition(clazz.getName()));
 
         return this.getProxy(clazz.getClassLoader());
@@ -76,7 +81,16 @@ public final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Se
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // TODO 最高优先级，做环绕通知
+        List<JoinPointDefinition> joinPointDefinitions = this.proxyMethodMap.get(method.toString());
 
-        return method.invoke(this.target, args);
+        for (JoinPointDefinition joinPointDefinition : joinPointDefinitions) {
+            MethodInvocationProceedingJoinPoint pjp = new MethodInvocationProceedingJoinPoint(args);
+
+            String aspectBeanName = joinPointDefinition.getAspectBeanName();
+            Object bean = this.beanFactory.getBean(aspectBeanName);
+            Method pointcutMethod = joinPointDefinition.getPointcutMethod();
+            Object result = pointcutMethod.invoke(bean, pjp);
+        }
+        return null;
     }
 }
