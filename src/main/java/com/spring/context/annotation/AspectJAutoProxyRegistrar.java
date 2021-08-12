@@ -115,6 +115,8 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
             aopRegistry.registerPointcutDefinitionMap(beanClass.getName(), pointcutDefinitions);
         }
 
+        // TODO 多线程优化
+
         while (true) {
             System.out.println("当前排队线程数：" + threadPool.getQueue().size());
 
