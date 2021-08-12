@@ -115,13 +115,35 @@ public class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar{
             aopRegistry.registerPointcutDefinitionMap(beanClass.getName(), pointcutDefinitions);
         }
 
-        // 等待扫描完成
-        try {
-            threadPool.shutdown();
-            threadPool.awaitTermination(300, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (true) {
+            System.out.println("当前排队线程数：" + threadPool.getQueue().size());
+
+            System.out.println("当前活动线程数：" + threadPool.getActiveCount());
+
+            System.out.println("执行完成线程数：" + threadPool.getCompletedTaskCount());
+
+            System.out.println("总线程数：" + threadPool.getTaskCount());
+
+            System.out.println();
+            if (threadPool.getTaskCount() == threadPool.getCompletedTaskCount()) {
+                // 任务执行完成
+                break;
+            }
         }
 
+
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        // 等待扫描完成
+//        try {
+//            threadPool.shutdown();
+//            threadPool.awaitTermination(300, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }
