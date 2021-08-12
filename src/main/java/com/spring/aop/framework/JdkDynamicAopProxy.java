@@ -80,17 +80,16 @@ public final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Se
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // TODO 最高优先级，做环绕通知
+        // 环绕通知
         List<JoinPointDefinition> joinPointDefinitions = this.proxyMethodMap.get(method.toString());
 
-        for (JoinPointDefinition joinPointDefinition : joinPointDefinitions) {
-            MethodInvocationProceedingJoinPoint pjp = new MethodInvocationProceedingJoinPoint(args);
+        MethodInvocationProceedingJoinPoint pjp = new MethodInvocationProceedingJoinPoint(
+                this.target, proxy, method, args, joinPointDefinitions, this.beanFactory);
 
-            String aspectBeanName = joinPointDefinition.getAspectBeanName();
-            Object bean = this.beanFactory.getBean(aspectBeanName);
-            Method pointcutMethod = joinPointDefinition.getPointcutMethod();
-            Object result = pointcutMethod.invoke(bean, pjp);
-        }
-        return null;
+        Object result = pjp.proceed();
+
+        return result;
     }
+
+
 }

@@ -17,18 +17,13 @@ public class AppTest {
     public static void main( String[] args ) {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(BeanScan.class, BeanScan2.class);
 
-        System.out.println("");
-        ProductService productService = (ProductService) applicationContext.getBean("productServiceImpl");
+//        ProductService productService = (ProductService) applicationContext.getBean("productServiceImpl");
         UserService userService = (UserService) applicationContext.getBean("userServiceImpl");
 
-        System.out.println(productService);
-        System.out.println(userService);
-
-        System.out.println(productService.getUserService() instanceof Proxy);
-        System.out.println(userService.getProductService() instanceof Proxy);
-
-        System.out.println("p中的u：" + productService.getUserService());
-        System.out.println("u中的p：" + userService.getProductService());
+//        System.out.println(productService);
+        String result = userService.userTest("张三");
+        System.out.println("==============最终结果===============");
+        System.out.println(result);
 
     }
 }

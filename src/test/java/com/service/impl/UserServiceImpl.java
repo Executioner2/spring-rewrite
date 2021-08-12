@@ -1,6 +1,6 @@
-package com.spring.service.impl;
+package com.service.impl;
 
-import com.spring.service.UserService;
+import com.service.UserService;
 
 /**
  * @Program: spring-rewrite

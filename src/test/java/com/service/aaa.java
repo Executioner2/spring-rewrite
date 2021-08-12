@@ -1,8 +1,6 @@
-package com.spring.service;
+package com.service;
 
-import com.spring.service.impl.ProductServiceImpl;
-
-import java.math.BigDecimal;
+import com.service.impl.ProductServiceImpl;
 
 /**
  * @Program: spring-rewrite

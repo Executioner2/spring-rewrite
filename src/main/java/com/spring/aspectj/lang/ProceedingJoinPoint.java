@@ -1,5 +1,7 @@
 package com.spring.aspectj.lang;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @Program: spring-rewrite
  * @Author: 2Executioner
@@ -11,8 +13,8 @@ package com.spring.aspectj.lang;
 public interface ProceedingJoinPoint extends JoinPoint{
 
     // 原始方法
-    Object proceed();
+    Object proceed() throws InvocationTargetException, IllegalAccessException;
 
     // 带参数的原始方法
-    Object proceed(Object[] args);
+    Object proceed(Object[] args) throws InvocationTargetException, IllegalAccessException;
 }

@@ -1,7 +1,7 @@
-package com.spring.service.impl;
+package com.service.impl;
 
-import com.spring.service.ProductService;
-import com.spring.service.UserService;
+import com.service.ProductService;
+import com.service.UserService;
 
 import java.math.BigDecimal;
 

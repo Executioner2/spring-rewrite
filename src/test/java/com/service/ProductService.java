@@ -1,4 +1,4 @@
-package com.spring.service;
+package com.service;
 
 import java.math.BigDecimal;
 

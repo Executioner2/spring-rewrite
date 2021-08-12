@@ -74,8 +74,8 @@ public class AopDefinitionRegistry extends AbstractAopRegistry {
                             if (!beanDefinition.isProxy()) {
                                 beanDefinition.setProxy(true);
                             }
-                            // 注册到连接点定义集合中
-                            this.registerJoinPointDefinitionMap(beanDefinition.getBeanClassName(), implMethod.toString(),
+                            // 注册到连接点定义集合中，这里用接口方法名当作key，因为调用代理方法时是由接口调用的
+                            this.registerJoinPointDefinitionMap(beanDefinition.getBeanClassName(), method.toString(),
                                     new JoinPointDefinition(pointcutDefinition.getAspectBeanName(),
                                             pointcutDefinition.getExecutionMethod()));
 

@@ -6,15 +6,13 @@ import com.spring.annotation.A;
 import com.spring.context.annotation.Import;
 import com.spring.handler.MyHandler;
 import com.spring.module.Category;
-import com.spring.service.ProductService;
-import com.spring.service.UserService;
-import com.spring.service.impl.ProductServiceImpl;
+import com.service.ProductService;
+import com.service.impl.ProductServiceImpl;
 import org.junit.Test;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
