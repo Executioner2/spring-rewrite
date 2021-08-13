@@ -4,10 +4,7 @@ import com.spring.context.ApplicationContext;
 import com.spring.context.annotation.AnnotationConfigApplicationContext;
 import com.spring.test.config.BeanScan;
 import com.spring.test.config.BeanScan2;
-import com.spring.test.service.ProductService;
 import com.spring.test.service.UserService;
-
-import java.lang.reflect.Proxy;
 
 /**
  * Hello world!

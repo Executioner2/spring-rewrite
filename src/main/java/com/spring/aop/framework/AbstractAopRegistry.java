@@ -26,7 +26,6 @@ public abstract class AbstractAopRegistry implements AopRegistry{
     // 连接点集合
     private final Map<String, Map<String, List<JoinPointDefinition>>> joinPointDefinitionMap = new ConcurrentHashMap<>(24);
 
-
     /**
      * 扫描连接点
      * @param factory
@@ -75,7 +74,7 @@ public abstract class AbstractAopRegistry implements AopRegistry{
      * @param joinPoint 连接点定义
      */
     @Override
-    public void registerJoinPointDefinitionMap(String className, String methodName, JoinPointDefinition joinPoint) {
+    public synchronized void registerJoinPointDefinitionMap(String className, String methodName, JoinPointDefinition joinPoint) {
         Map<String, List<JoinPointDefinition>> joinPointDefinition = this.getJoinPointDefinition(className);
 
         if (joinPointDefinition == null) {
